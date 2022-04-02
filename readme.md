@@ -10,7 +10,7 @@ Always wanted a fancy display on your amplifier or mediastreamer that you can re
 It's packaged as a single html-file with embedded css and javascript. That means that you can just download that one file and open it in any webbrowser. You can use any tablet or laptop as a display. If you want to go fancy, you can add a [LCD-screen](https://www.raspberrypi.com/products/raspberry-pi-touch-display/) to a [Raspberry Pi](https://www.raspberrypi.com) and glue that to your BLuOS player :).
 
 ## In progress
-In its current state the app is bare bones and messy. I might add features and clean things up in the future.
+In its current state the app is bare-bones and messy. I might add features and clean things up in the future.
 
 ## Installation
 ### Method 1
