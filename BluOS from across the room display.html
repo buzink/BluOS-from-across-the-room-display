@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-US">
     <head>
-        <!-- <meta http-equiv="refresh" content="10" > -->
         <meta charset="UTF-8">
     </head>
     <style>
@@ -18,7 +17,6 @@
             display: flex;
             height: 600px;
             width: 100%;
-            /* margin-top: 200px; */
         }
         #left {
             width: 50%;
@@ -44,7 +42,12 @@
         }
         #serviceIcon {
             height: 1em;
-            margin-right: 10px;
+        }
+        #station {
+            margin-left: 10px;
+        }
+        #quality {
+            margin-left: 10px;
         }
         #title1 {
             font-size: 100px;
@@ -67,6 +70,8 @@
                         <div id="title3"></div>
                         <div id="meta">
                             <img id="serviceIcon" src=""/>
+                            <div id="station">
+                            </div>
                             <div id="quality">
                             </div>
                         </div>
@@ -87,6 +92,7 @@
                     if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Radio Paradise") {
                         document.getElementById("title1").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                         document.getElementById("title2").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
+                        document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                     } else if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "TuneIn" || xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Calm Radio") {
                         document.getElementById("title1").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                         document.getElementById("title2").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
