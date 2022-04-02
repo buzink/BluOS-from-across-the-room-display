@@ -5,6 +5,8 @@ Always wanted a fancy display on your amplifier or mediastreamer that you can re
 
 BluOS from across the room display shows info about what is currently playing on your BluOS streamer in a way that is readable from across the room. It's focus is on song title, artist and album art, but it also displays album title, source and quality.
 
+![screenshot of BluOS from across the room display in a browser](https://github.com/buzink/BluOS-from-across-the-room-display/blob/master/Screenshot-browser.jpg?raw=true)
+
 It's packaged as a single html-file with embedded css and javascript. That means that you can just download that file, edit it with any text editor to change the ip-address to that of your BluOS player and open it in any webbrowser. You can use any tablet or laptop as a display. If you want to go fancy, you can add a LCD-screen tot an Raspberry Pie and glue that to your BLuOS player :).
 
 In its current state it's bare bones and messy. I might add features and clean things up in the future.
