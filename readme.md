@@ -14,4 +14,5 @@ In its current state it's bare bones and messy. I might add features and clean t
 1. Change the ip address on lines 103, 105, 119 in a text editor and save
 1. Open the file in any webbrowser
 
-
+## Supported BluOS streamers
+This app should work with any BluOS streamer that offer the [Custom Integration API](https://bluos.net/wp-content/uploads/2021/03/Custom-Integration-API-v1.0_March-2021.pdf), including the Bluesound Node N100, Node 2, Node 2i and Node N130. It has been tested with the BlueSound Node 2i.
