@@ -83,7 +83,13 @@
             </div>
 
         <script>
-            var ipAddress = "http://192.168.2.86:11000";
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('ipaddress') != null) {
+                var ipAddress = "http://" + urlParams.get('ipaddress') +":11000";
+            } else {
+                // change the ip address to that of your BluOS player
+                var ipAddress = "http://192.168.2.86:11000";
+            }
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (xhttp.readyState == 4 && xhttp.status == 200) {

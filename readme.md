@@ -13,9 +13,15 @@ It's packaged as a single html-file with embedded css and javascript. That means
 In its current state the app is bare bones and messy. I might add features and clean things up in the future.
 
 ## Installation
+### Method 1
 1. Download "BluOS from across the room display.html"
-1. Change the ip address on line 86 in a text editor and save
+1. Open the file in a text editor and change the ip address on line 91 tot that of your BluOS player
 1. Open the file in any webbrowser
+
+### Method 2
+1. Download "BluOS from across the room display.html"
+1. Open the file in any webbrowser
+1. Add the ip address of your BluOS player to the url in your browser address bar like so: "?ipaddress=192.168.2.86"
 
 ## Supported BluOS streamers
 This app should work with any BluOS streamer that offers the [Custom Integration API](https://bluos.net/wp-content/uploads/2021/03/Custom-Integration-API-v1.0_March-2021.pdf), including the Bluesound Node N100, Node 2, Node 2i and Node N130. It has been tested with the BlueSound Node 2i.
