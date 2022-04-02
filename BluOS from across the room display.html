@@ -11,53 +11,64 @@
             flex-direction: row;
             align-items: center;
             justify-items: center;
-            height: 100vh;
+            height: 98vh;
         }
         #leftright {
             display: flex;
-            height: 70vh;
+            height: 90vh;
             width: 100%;
         }
         #left {
-            width: 50%;
-            padding-left: 30px;
+            width: 60%;
+            padding-left: 3vh;
+            padding-right: 3vh;
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-items: center;
         }
         #right {
-            width: 50%;  
+            width: 40%;
+            padding-right: 3vh;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-items: center; 
         }
         #albumcover {
             display: block;
             margin-left: auto;
             margin-right: auto;
-            height: 100%;
+            width: 90vh;
+        }
+        #songTitle {
+            font-size: 12vh;
+            width: 100%;
+        }
+        #artistName {
+            font-size: 8vh;
+            width: 100%;
+            margin-top: 3vh;
+        }
+        #albumTitle {
+            font-size: 5vh;
+            margin-top: 3vh;
+            width: 100%;
         }
         #meta {
             display: flex;
-            margin-top:25px;
-            font-size: 4vh;
+            margin-top: 3vh;
+            font-size: 3vh;
+            width: 100%;
         }
         #serviceIcon {
-            height: 1em;
+            height: 3vh;
         }
         #station {
-            margin-left: 10px;
+            margin-left: 1vh;
         }
         #quality {
-            margin-left: 10px;
-        }
-        #title1 {
-            font-size: 10vh;
-        }
-        #title2 {
-            font-size: 7vh;
-        }
-        #title3 {
-            font-size: 4vh;
-            margin-top: 20px;
+            margin-left: 1vh;
         }
         </style>
     <body>
@@ -65,9 +76,9 @@
             <div id="leftright">
                 <div id="left">
                     <div id="leftflex">
-                        <div id="title1"></div>
-                        <div id="title2"></div>
-                        <div id="title3"></div>
+                        <div id="songTitle"></div>
+                        <div id="artistName"></div>
+                        <div id="albumTitle"></div>
                         <div id="meta">
                             <img id="serviceIcon" src=""/>
                             <div id="station">
@@ -97,17 +108,18 @@
                     var quality;
 
                     if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Radio Paradise") {
-                        document.getElementById("title1").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
-                        document.getElementById("title2").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
+                        document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                        document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[0];
+                        document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[1];
                         document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                     } else if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "TuneIn" || xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Calm Radio") {
-                        document.getElementById("title1").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
-                        document.getElementById("title2").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                        document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                        document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                     } else {        
-                        document.getElementById("title1").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
-                        document.getElementById("title2").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                        document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                        document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                         if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") {
-                            document.getElementById("title2").innerHTML = document.getElementById("title2").innerHTML + ' • ' + xmlDoc.getElementsByTagName("title3")[0].innerHTML;
+                            document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
                         }
                     }
                     if (xmlDoc.getElementsByTagName("image")[0].innerHTML.startsWith("http")  ) {
