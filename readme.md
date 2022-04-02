@@ -7,7 +7,9 @@ Always wanted a fancy display on your amplifier or mediastreamer that you can re
 
 ![screenshot of BluOS from across the room display in a browser](https://github.com/buzink/BluOS-from-across-the-room-display/blob/master/Screenshot-browser.jpg?raw=true)
 
-It's packaged as a single html-file with embedded css and javascript. That means that you can just download that one file and open it in any webbrowser. You can use any tablet or laptop as a display. If you want to go fancy, you can add a [LCD-screen](https://www.raspberrypi.com/products/raspberry-pi-touch-display/) to a [Raspberry Pi](https://www.raspberrypi.com) and glue that to your BLuOS player :).
+It's packaged as a single html-file with embedded css and javascript. That means that you can just download that one file and open it in any webbrowser. You can use an old laptop for a cheap display. If you want to go fancy, you can add a [LCD-screen](https://www.raspberrypi.com/products/raspberry-pi-touch-display/) to a [Raspberry Pi](https://www.raspberrypi.com) and glue that to your BLuOS player :).
+
+If you want to use a tablet as a display, it's best to run a webserver as you can't easily load local html-files on Android and iPadOS (as far as I know).
 
 ## In progress
 In its current state the app is bare-bones and messy. I might add features and clean things up in the future.
