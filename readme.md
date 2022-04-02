@@ -9,3 +9,9 @@ It's packaged as a single html-file with embedded css and javascript. That means
 
 In its current state it's bare bones and messy. I might add features and clean things up in the future.
 
+## Installation
+1. Download "BluOS from across the room display.html"
+1. Change the ip address on lines 103, 105, 119 in a text editor and save
+1. Open the file in any webbrowser
+
+
