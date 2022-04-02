@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <!-- <meta http-equiv="refresh" content="10" > -->
+        <meta charset="UTF-8">
+    </head>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-items: center;
+            height: 100vh;
+        }
+        #leftright {
+            display: flex;
+            height: 600px;
+            width: 100%;
+            /* margin-top: 200px; */
+        }
+        #left {
+            width: 50%;
+            padding-left: 30px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-items: center;
+        }
+        #leftflex {
+        }
+        #right {
+            width: 50%;  
+        }
+        #albumcover {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            height: 600px;
+        }
+        #meta {
+            display: flex;
+            margin-top:25px;
+            font-size: 25px;
+        }
+        #serviceIcon {
+            height: 1em;
+            margin-right: 10px;
+        }
+        #title1 {
+            font-size: 100px;
+        }
+        #title2 {
+            font-size: 50px;
+        }
+        #title3 {
+            font-size: 25px;
+            margin-top: 20px;
+        }
+        </style>
+    <body>
+
+            <div id="leftright">
+                <div id="left">
+                    <div id="leftflex">
+                        <div id="title1"></div>
+                        <div id="title2"></div>
+                        <div id="title3"></div>
+                        <div id="meta">
+                            <img id="serviceIcon" src=""/>
+                            <div id="quality">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="right">
+                    <img id="albumcover" src=""/>
+                </div>
+            </div>
+
+        <script>
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+                    var xmlDoc = xhttp.responseXML; //important to use responseXML here
+                    var quality;
+
+                    if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Radio Paradise") {
+                        document.getElementById("title1").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                        document.getElementById("title2").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
+                    } else if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "TuneIn" || xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Calm Radio") {
+                        document.getElementById("title1").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                        document.getElementById("title2").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                    } else {        
+                        document.getElementById("title1").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                        document.getElementById("title2").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                        if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") {
+                            document.getElementById("title2").innerHTML = document.getElementById("title2").innerHTML + ' • ' + xmlDoc.getElementsByTagName("title3")[0].innerHTML;
+                        }
+                    }
+                    if (xmlDoc.getElementsByTagName("image")[0].innerHTML.startsWith("http")  ) {
+                        document.getElementById("albumcover").src = xmlDoc.getElementsByTagName("image")[0].innerHTML;
+                    } else {
+                        document.getElementById("albumcover").src = "http://192.168.2.86:11000" + xmlDoc.getElementsByTagName("image")[0].innerHTML;
+                    }
+                    document.getElementById("serviceIcon").src = "http://192.168.2.86:11000" + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
+                    if (typeof xmlDoc.getElementsByTagName("quality")[0] != "undefined") {
+                        document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("quality")[0].innerHTML.toUpperCase();
+                    } else if (typeof xmlDoc.getElementsByTagName("streamUrl")[0] != "undefined") {
+                        document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("streamUrl")[0].innerHTML;                   
+                    } else {
+                        document.getElementById("quality").innerHTML = "";
+                    }
+                    if (typeof xmlDoc.getElementsByTagName("streamFormat")[0] != "undefined") {
+                        document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';               
+                    }
+                }
+            };
+            setInterval(function () {   
+                xhttp.open("GET", "http://192.168.2.86:11000/Status", true);
+                xhttp.send();
+            }, 1000);        
+        </script> 
+</body>
+</html>
+
+
+
+
