@@ -83,10 +83,11 @@
             </div>
 
         <script>
+            var ipAddress = "http://192.168.2.86:11000";
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (xhttp.readyState == 4 && xhttp.status == 200) {
-                    var xmlDoc = xhttp.responseXML; //important to use responseXML here
+                    var xmlDoc = xhttp.responseXML;
                     var quality;
 
                     if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Radio Paradise") {
@@ -106,9 +107,9 @@
                     if (xmlDoc.getElementsByTagName("image")[0].innerHTML.startsWith("http")  ) {
                         document.getElementById("albumcover").src = xmlDoc.getElementsByTagName("image")[0].innerHTML;
                     } else {
-                        document.getElementById("albumcover").src = "http://192.168.2.86:11000" + xmlDoc.getElementsByTagName("image")[0].innerHTML;
+                        document.getElementById("albumcover").src = ipAddress + xmlDoc.getElementsByTagName("image")[0].innerHTML;
                     }
-                    document.getElementById("serviceIcon").src = "http://192.168.2.86:11000" + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
+                    document.getElementById("serviceIcon").src = ipAddress + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
                     if (typeof xmlDoc.getElementsByTagName("quality")[0] != "undefined") {
                         document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("quality")[0].innerHTML.toUpperCase();
                     } else if (typeof xmlDoc.getElementsByTagName("streamUrl")[0] != "undefined") {
@@ -122,7 +123,7 @@
                 }
             };
             setInterval(function () {   
-                xhttp.open("GET", "http://192.168.2.86:11000/Status", true);
+                xhttp.open("GET", ipAddress + "/Status", true);
                 xhttp.send();
             }, 1000);        
         </script> 
