@@ -9,7 +9,7 @@ Always wanted a fancy display on your amplifier or media streamer that you can r
 
 It's packaged as a single html-file with embedded css and javascript. You can just download that one file and open it in any web browser. You can use an old laptop for a cheap display. If you want to go fancy, you can add a [LCD-screen](https://www.raspberrypi.com/products/raspberry-pi-touch-display/) to a [Raspberry Pi](https://www.raspberrypi.com) and glue that to your Bluesound Node :).
 
-If you want to use a tablet as a display, it's best to run a webserver as you can't easily load local html-files on Android and iPadOS (as far as I know).
+If you want to use a tablet or TV as a display, it's best to run a webserver as you can't easily load local html-files in a web browser on Android, iPadOS and TVs (as far as I know).
 
 ## In progress
 In its current state the app is bare-bones and messy. I might add features and clean things up in the future.
