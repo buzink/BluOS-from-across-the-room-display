@@ -196,8 +196,14 @@
                                 document.getElementById("quality").innerHTML = "MQA <span style=\"color:#4dbb63;\">•</span>";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "mqaAuthored") {
                                 document.getElementById("quality").innerHTML = "MQA <span style=\"color:#3ec4e4;\">•</span>";
+                            } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "hd") {
+                                document.getElementById("quality").innerHTML = "HR";
+                            } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "cd") {
+                                document.getElementById("quality").innerHTML = "CD";
+                            } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "dolbyAudio") {
+                                document.getElementById("quality").innerHTML = "DolbyDigital";
                             } else {
-                                document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("quality")[0].innerHTML.toUpperCase();
+                                document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("quality")[0].innerHTML;
                             }
                         } else if (typeof xmlDoc.getElementsByTagName("streamUrl")[0] != "undefined") {     
                             document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("streamUrl")[0].innerHTML;             
@@ -206,7 +212,7 @@
                         }
                         if (typeof xmlDoc.getElementsByTagName("streamFormat")[0] != "undefined" && xmlDoc.getElementsByTagName("quality")[0].innerHTML != "mqa" && xmlDoc.getElementsByTagName("quality")[0].innerHTML != "mqaAuthored") {
                             if (typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] != "undefined") {
-                                document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] + ' ' + (xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0]/1000) + 'kHz ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] + '-bit ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] + 'ch';                
+                                document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] + '-bit/'  + (xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0]/1000) + 'kHz ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] + 'ch';                
                             } else {
                                 document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';
                             }
