@@ -17,7 +17,7 @@ In its current state the app is bare-bones and messy. I might add features and c
 ## Installation
 ### Method 1
 1. Download "BluOS from across the room display.html"
-1. Open the file in a text editor and change the ip address on line 91 tot that of your BluOS player
+1. Open the file in a text editor and change the ip address on line 98 tot that of your BluOS player
 1. Open the file in any webbrowser
 
 ### Method 2
