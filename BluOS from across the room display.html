@@ -100,11 +100,18 @@
         //stop editing here unless you know what your are doing :) 
         function longPoll() {    
             var xhttp = new XMLHttpRequest();
-            console.log('eTag: ' + eTag);
+            //console.log('eTag: ' + eTag);
             xhttp.open("GET", "http://" + ipAddress + ":" + port + "/Status?timeout=100&etag=" + eTag, true);
+            xhttp.send();
+            const tryAgain = setTimeout(() => {
+                console.log("try again run " + run);
+                xhttp.abort;
+                longPoll(); 
+            }, 101000);
             xhttp.onreadystatechange = function() {
                 if (xhttp.readyState == 4) {
                     if(xhttp.status == 200) {
+                        clearTimeout(tryAgain);
                         var xmlDoc = xhttp.responseXML;
                         eTag = xmlDoc.getElementsByTagName('status')[0].getAttribute('etag');
                         var quality;
@@ -197,7 +204,7 @@
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "mqaAuthored") {
                                 document.getElementById("quality").innerHTML = "MQA <span style=\"color:#3ec4e4;\">•</span>";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "hd") {
-                                document.getElementById("quality").innerHTML = "HR";
+                                document.getElementById("quality").innerHTML = "Hi&middot;Res";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "cd") {
                                 document.getElementById("quality").innerHTML = "CD";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "dolbyAudio") {
@@ -217,7 +224,7 @@
                                 document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';
                             }
                         }
-                        console.log("RUN " + run);
+                        //console.log("RUN " + run);
                         run = run + 1;
                     }
                     if (xhttp.status > 0) {
@@ -225,7 +232,6 @@
                     }
                 }     
             };
-            xhttp.send();
         }
         const urlParams = new URLSearchParams(window.location.search);
         if(urlParams.get('ipaddress') != null) {
