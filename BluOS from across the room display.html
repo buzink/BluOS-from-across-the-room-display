@@ -57,6 +57,15 @@
             text-decoration: none;
             display: block;
         }
+        #receiverON {
+            display: none;
+        }
+        #receiverOFF {
+            display: none;
+        }
+        #receiverInputBluOS {
+            display: none;
+        }
         #songTitle {
             font-size: 12vh;
             width: 100%;
@@ -110,12 +119,15 @@
                         <button onclick="control('/Pause?toggle=1')" id="togglePause">Play</button>
                         <button onclick="control('/Back')" id="back">Back</button>
                         <button onclick="control('/Skip')" id="skip">Skip</button>
-                        <button onclick="control('/Volume?db=1&tell_slaves=off')" id="volumeUp">Volume up</button>
-                        <button onclick="control('/Volume?db=-1&tell_slaves=off')" id="volumeDown">Volume down</button>
+                        <button onclick="control(VolumeUpUrl)" id="volumeUp">Volume up</button>
+                        <button onclick="control(VolumeDownUrl)" id="volumeDown">Volume down</button>
                         <div id="actions">
                         </div>
                         <div id="presets">
                         </div>
+                        <button onclick="control(receiverOnUrl)" id="receiverON">ON</button>
+                        <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
+                        <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
                         <button onclick="location.reload()">Reload app</button>
                         <a href="#" onclick="toggleControls();" id="hideControls">Back to album art ></a>
                     </div>
@@ -126,11 +138,24 @@
         //Change ipAddress and port to that of your BluOS player:    
         var ipAddress = "192.168.2.86";
         var port = "11000";
-        //stop editing here unless you know what your are doing :) 
+        var receiverOnUrl = ''; //'http://192.168.2.79:8000/api/PWON';
+        var receiverOffUrl = ''; //'http://192.168.2.79:8000/api/PWSTANDBY';
+        var receiverInputBluOSUrl = ''; //'http://192.168.2.79:8000/api/MSQUICK1';
+        var receiverVolumeUpUrl = ''; //'http://192.168.2.79:8000/api/MVUP';
+        var receiverVolumeDownUrl = ''; //'http://192.168.2.79:8000/api/MVDOWN';
+        //stop editing here unless you know what your are doing :)
+        var url = 'http://' + ipAddress + ':' + port;
+        if (receiverVolumeUpUrl != '' && receiverVolumeUpUrl != '') {
+            var VolumeUpUrl = receiverVolumeUpUrl;
+            var VolumeDownUrl = receiverVolumeDownUrl;
+        } else {
+            var VolumeUpUrl = '/Volume?db=1&tell_slaves=off';
+            var VolumeDownUrl = '/Volume?db=-1&tell_slaves=off';
+        }
         function longPoll() {    
             var xhttp = new XMLHttpRequest();
             console.log("Api call " + call);
-            xhttp.open("GET", "http://" + ipAddress + ":" + port + "/Status?timeout=100&etag=" + eTag, true);
+            xhttp.open("GET", url + "/Status?timeout=100&etag=" + eTag, true);
             xhttp.send();
             const tryAgain = setTimeout(() => {
                 console.log("Initiate timeout api call " + call + " (update " + update +")");
@@ -282,9 +307,18 @@
                         if (typeof xmlDoc.getElementsByTagName("action")[0] != "undefined") {
                             for (i=0; i < xmlDoc.getElementsByTagName("action").length; i++) {
                                 if (typeof xmlDoc.getElementsByTagName("action")[i].getAttribute('url') != 'undefined' && xmlDoc.getElementsByTagName("action")[i].getAttribute('url') != null) {
-                                    document.getElementById("actions").innerHTML += '<button onclick=\"window.location.href=\'http://' + ipAddress + ":" + port + xmlDoc.getElementsByTagName("action")[i].getAttribute('url') + '\'\"" id=\"' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '\">' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '</button>';
+                                    document.getElementById("actions").innerHTML += '<button onclick=\"control(\'' + xmlDoc.getElementsByTagName("action")[i].getAttribute('url') + '\')\"" id=\"' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '\">' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '</button>';
                                 }
                             }
+                        }
+                        if (receiverOnUrl != '') {
+                            document.getElementById("receiverON").style.display = 'block';
+                        }
+                        if (receiverOffUrl != '') {
+                            document.getElementById("receiverOFF").style.display = 'block';
+                        }
+                        if (receiverInputBluOSUrl != '') {
+                            document.getElementById("receiverInputBluOS").style.display = 'block';
                         }
                         console.log("Update " + update);
                         update = update + 1;
@@ -318,7 +352,11 @@
         }
         function control(message) {    
             var xhttpa = new XMLHttpRequest();
-            xhttpa.open("GET", "http://" + ipAddress + ":" + port + message, true);
+            if (message.startsWith('http')) {
+                xhttpa.open("GET", message, true);
+            } else {
+                xhttpa.open("GET", url + message, true);
+            }  
             xhttpa.send();
             xhttpa.onreadystatechange = function() {
                 if (xhttpa.readyState == 4) {
@@ -330,7 +368,7 @@
         }
         function listpresets() {    
             var xhttpP = new XMLHttpRequest();
-            xhttpP.open("GET", "http://" + ipAddress + ":" + port + '/Presets', true);
+            xhttpP.open("GET", url + '/Presets', true);
             xhttpP.send();
             xhttpP.onreadystatechange = function() {
                 if (xhttpP.readyState == 4) {
