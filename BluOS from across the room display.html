@@ -41,6 +41,22 @@
             margin-right: auto;
             width: 90vh;
         }
+        #controls {
+            display: none;
+            margin-left: auto;
+            margin-right: auto;
+            width: 90vh;
+            font-size: 3vh;
+        }
+        #controls button {
+            font-size: 3vh;
+            margin-bottom: 3vh;
+        }
+        #hideControls {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
         #songTitle {
             font-size: 12vh;
             width: 100%;
@@ -89,7 +105,20 @@
                     </div>
                 </div>
                 <div id="right">
-                    <img id="albumcover" src=""/>
+                    <img onclick="toggleControls();" id="albumcover" src=""/>
+                    <div id="controls">
+                        <button onclick="control('/Pause?toggle=1')" id="togglePause">Play</button>
+                        <button onclick="control('/Back')" id="back">Back</button>
+                        <button onclick="control('/Skip')" id="skip">Skip</button>
+                        <button onclick="control('/Volume?db=1&tell_slaves=off')" id="volumeUp">Volume up</button>
+                        <button onclick="control('/Volume?db=-1&tell_slaves=off')" id="volumeDown">Volume down</button>
+                        <div id="actions">
+                        </div>
+                        <div id="presets">
+                        </div>
+                        <button onclick="location.reload()">Reload app</button>
+                        <a href="#" onclick="toggleControls();" id="hideControls">Back to album art ></a>
+                    </div>
                 </div>
             </div>
 
@@ -100,17 +129,20 @@
         //stop editing here unless you know what your are doing :) 
         function longPoll() {    
             var xhttp = new XMLHttpRequest();
-            //console.log('eTag: ' + eTag);
+            console.log("Api call " + call);
             xhttp.open("GET", "http://" + ipAddress + ":" + port + "/Status?timeout=100&etag=" + eTag, true);
             xhttp.send();
             const tryAgain = setTimeout(() => {
-                console.log("try again run " + run);
+                console.log("Initiate timeout api call " + call + " (update " + update +")");
                 xhttp.abort;
                 longPoll(); 
             }, 101000);
             xhttp.onreadystatechange = function() {
+                console.log("Readystate " + xhttp.readyState + " / Status " + xhttp.status);
                 if (xhttp.readyState == 4) {
                     if(xhttp.status == 200) {
+                        listpresets();
+                        console.log("Cancel timeout api call " + (call-1) + " (update " + update + ")");
                         clearTimeout(tryAgain);
                         var xmlDoc = xhttp.responseXML;
                         eTag = xmlDoc.getElementsByTagName('status')[0].getAttribute('etag');
@@ -224,22 +256,98 @@
                                 document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';
                             }
                         }
-                        //console.log("RUN " + run);
-                        run = run + 1;
+                        if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
+                            if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
+                                document.getElementById("togglePause").innerHTML = "Play";
+                                document.getElementById("togglePause").style.display = 'block';
+                                document.getElementById("back").style.display = 'block';
+                                document.getElementById("skip").style.display = 'block';
+                            } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'play') {
+                                document.getElementById("togglePause").innerHTML = "Pause";
+                                document.getElementById("togglePause").style.display = 'block';
+                                document.getElementById("back").style.display = 'block';
+                                document.getElementById("skip").style.display = 'block';
+                            } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'stream') {
+                                document.getElementById("togglePause").innerHTML = "Pause";
+                                document.getElementById("togglePause").style.display = 'block';
+                                document.getElementById("back").style.display = 'none';
+                                document.getElementById("skip").style.display = 'none';
+                            } else {
+                                document.getElementById("togglePause").style.display = 'none';
+                                document.getElementById("back").style.display = 'none';
+                                document.getElementById("skip").style.display = 'none';
+                            }
+                        }
+                        document.getElementById("actions").innerHTML = '';
+                        if (typeof xmlDoc.getElementsByTagName("action")[0] != "undefined") {
+                            for (i=0; i < xmlDoc.getElementsByTagName("action").length; i++) {
+                                if (typeof xmlDoc.getElementsByTagName("action")[i].getAttribute('url') != 'undefined' && xmlDoc.getElementsByTagName("action")[i].getAttribute('url') != null) {
+                                    document.getElementById("actions").innerHTML += '<button onclick=\"window.location.href=\'http://' + ipAddress + ":" + port + xmlDoc.getElementsByTagName("action")[i].getAttribute('url') + '\'\"" id=\"' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '\">' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '</button>';
+                                }
+                            }
+                        }
+                        console.log("Update " + update);
+                        update = update + 1;
                     }
                     if (xhttp.status > 0) {
                         longPoll();
                     }
                 }     
             };
+            call = call + 1;
         }
         const urlParams = new URLSearchParams(window.location.search);
         if(urlParams.get('ipaddress') != null) {
             ipAddress = urlParams.get('ipaddress');
         }
-        var run = 0;
+        var update = 1;
+        var call = 1;
         var eTag = "";
         longPoll();
+        //controls
+        const albumCover = document.getElementById('albumcover');
+        const controls = document.getElementById('controls');
+        function toggleControls () {
+            if (controls.style.display === 'none') {
+                controls.style.display = 'block';
+                albumCover.style.display = 'none';    
+            } else {
+                controls.style.display = 'none';
+                albumCover.style.display = 'block'; 
+            }
+        }
+        function control(message) {    
+            var xhttpa = new XMLHttpRequest();
+            xhttpa.open("GET", "http://" + ipAddress + ":" + port + message, true);
+            xhttpa.send();
+            xhttpa.onreadystatechange = function() {
+                if (xhttpa.readyState == 4) {
+                    if(xhttpa.status == 200) {
+                        var xmlDoca = xhttpa.responseXML;
+                    }
+                }     
+            };
+        }
+        function listpresets() {    
+            var xhttpP = new XMLHttpRequest();
+            xhttpP.open("GET", "http://" + ipAddress + ":" + port + '/Presets', true);
+            xhttpP.send();
+            xhttpP.onreadystatechange = function() {
+                if (xhttpP.readyState == 4) {
+                    if(xhttpP.status == 200) {
+                        var xmlDocP = xhttpP.responseXML;
+                        document.getElementById("presets").innerHTML = '';
+                        if (typeof xmlDocP.getElementsByTagName("preset")[0] != "undefined") {
+                            for (i=0; i < xmlDocP.getElementsByTagName("preset").length; i++) {
+                                if (typeof xmlDocP.getElementsByTagName("preset")[i].getAttribute('name') != 'undefined' && xmlDocP.getElementsByTagName("preset")[i].getAttribute('name') != null) {
+                                    document.getElementById("presets").innerHTML += '<button onclick=\"control(\'/Preset?id=' + xmlDocP.getElementsByTagName("preset")[i].getAttribute('id') + '\'\)"" id=\"' + xmlDocP.getElementsByTagName("preset")[i].getAttribute('name') + '\">' + xmlDocP.getElementsByTagName("preset")[i].getAttribute('name') + '</button>';
+                                }
+                            }
+                        }
+                    }
+                }     
+            };
+        }
         </script> 
 </body>
 </html>
