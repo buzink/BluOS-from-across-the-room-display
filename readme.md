@@ -15,15 +15,23 @@ If you want to use a tablet or TV as a display, it's best to run a webserver as 
 In its current state the app is bare-bones and messy. I might add features and clean things up in the future.
 
 ## Installation
-### Method 1
+### Method 1: settings through url
 1. Download "BluOS from across the room display.html"
-1. Open the file in a text editor and change the ip address on line 98 tot that of your BluOS player
+1. Open the file in a text editor and change the ip address on line 139 tot that of your BluOS player
 1. Open the file in any web browser
 
-### Method 2
+### Method 2: settings in file
 1. Download "BluOS from across the room display.html"
 1. Open the file in any web browser
 1. Add the ip address of your BluOS player to the url in your browser address bar like so: "?ipaddress=192.168.2.86"
+
+### Method 3: docker nginx command line
+```console
+git clone https://github.com/buzink/BluOS-from-across-the-room-display.git
+cd BluOS-from-across-the-room-display/
+chmod +x pipeline.sh
+./pipeline.sh
+```
 
 ## Supported BluOS streamers
 This app should work with any BluOS streamer that offers the [Custom Integration API](https://bluos.net/wp-content/uploads/2021/03/Custom-Integration-API-v1.0_March-2021.pdf), including the Bluesound Node N100, Node 2, Node 2i and Node N130. It has been tested with the Node 2i.
