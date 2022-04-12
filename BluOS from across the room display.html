@@ -138,11 +138,11 @@
         //Change ipAddress and port to that of your BluOS player:    
         var ipAddress = "192.168.2.86";
         var port = "11000";
-        var receiverOnUrl = ''; //'http://192.168.2.79:8000/api/PWON';
-        var receiverOffUrl = ''; //'http://192.168.2.79:8000/api/PWSTANDBY';
-        var receiverInputBluOSUrl = ''; //'http://192.168.2.79:8000/api/MSQUICK1';
-        var receiverVolumeUpUrl = ''; //'http://192.168.2.79:8000/api/MVUP';
-        var receiverVolumeDownUrl = ''; //'http://192.168.2.79:8000/api/MVDOWN';
+        var receiverOnUrl = 'http://192.168.2.79:8000/api/PWON';
+        var receiverOffUrl = 'http://192.168.2.79:8000/api/PWSTANDBY';
+        var receiverInputBluOSUrl = 'http://192.168.2.79:8000/api/MSQUICK1';
+        var receiverVolumeUpUrl = 'http://192.168.2.79:8000/api/MVUP';
+        var receiverVolumeDownUrl = 'http://192.168.2.79:8000/api/MVDOWN';
         //stop editing here unless you know what your are doing :)
         var url = 'http://' + ipAddress + ':' + port;
         if (receiverVolumeUpUrl != '' && receiverVolumeUpUrl != '') {
@@ -172,24 +172,35 @@
                         var xmlDoc = xhttp.responseXML;
                         eTag = xmlDoc.getElementsByTagName('status')[0].getAttribute('etag');
                         var quality;
+                        let song = {
+                            "time": new Date(),
+                            "service": xmlDoc.getElementsByTagName("serviceName")[0].innerHTML
+                        };
                         if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Radio Paradise") {
                             if (typeof xmlDoc.getElementsByTagName("title2")[0] != "undefined") { 
                                 document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                                song.title = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                             } else {
                                 document.getElementById("songTitle").innerHTML = "";
+                                song.title = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") { 
                                 document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[0];
+                                song.artist = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[0];
                             } else {
                                 document.getElementById("artistName").innerHTML = "";
+                                song.artist = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") { 
                                 document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[1];
+                                song.album = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[1];
                             } else {
                                 document.getElementById("albumTitle").innerHTML = "";
+                                song.album = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title1")[0] != "undefined") { 
                                 document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                                song.station = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                             } else {
                                 document.getElementById("station").innerHTML = "";
                             }
@@ -244,43 +255,65 @@
                         if (typeof xmlDoc.getElementsByTagName("image")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("image")[0].innerHTML.startsWith("http")  ) {
                              document.getElementById("albumcover").src = xmlDoc.getElementsByTagName("image")[0].innerHTML;
+                             song.albumCover = xmlDoc.getElementsByTagName("image")[0].innerHTML;
                             } else {
                             document.getElementById("albumcover").src = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("image")[0].innerHTML;
+                            song.albumCover = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("image")[0].innerHTML;
                             }
                         } else {
                             document.getElementById("albumcover").src = "";
+                            song.albumCover = '';
                         }
                         if (typeof xmlDoc.getElementsByTagName("serviceIcon")[0] != "undefined") {   
                             document.getElementById("serviceIcon").src = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
+                            song.serviceIcon = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
                         } else {
                             document.getElementById("serviceIcon").src = "";
+                            song.serviceIcon = '';
                         }
                         if (typeof xmlDoc.getElementsByTagName("quality")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "mqa") {
                                 document.getElementById("quality").innerHTML = "MQA <span style=\"color:#4dbb63;\">•</span>";
+                                song.quality = "MQA <span style=\"color:#4dbb63;\">•</span>";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "mqaAuthored") {
                                 document.getElementById("quality").innerHTML = "MQA <span style=\"color:#3ec4e4;\">•</span>";
+                                song.quality = "MQA <span style=\"color:#3ec4e4;\">•</span>";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "hd") {
                                 document.getElementById("quality").innerHTML = "Hi&middot;Res";
+                                song.quality = "Hi&middot;Res";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "cd") {
                                 document.getElementById("quality").innerHTML = "CD";
+                                song.quality = "CD";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "dolbyAudio") {
                                 document.getElementById("quality").innerHTML = "DolbyDigital";
+                                song.quality = "DolbyDigital";
                             } else {
                                 document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("quality")[0].innerHTML;
+                                song.quality = xmlDoc.getElementsByTagName("quality")[0].innerHTML;
                             }
                         } else if (typeof xmlDoc.getElementsByTagName("streamUrl")[0] != "undefined") {     
-                            document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("streamUrl")[0].innerHTML;             
+                            document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("streamUrl")[0].innerHTML;
+                            song.quality = xmlDoc.getElementsByTagName("streamUrl")[0].innerHTML;            
                         } else {
                             document.getElementById("quality").innerHTML = "";
+                            song.quality = '';
                         }
                         if (typeof xmlDoc.getElementsByTagName("streamFormat")[0] != "undefined" && xmlDoc.getElementsByTagName("quality")[0].innerHTML != "mqa" && xmlDoc.getElementsByTagName("quality")[0].innerHTML != "mqaAuthored") {
+                            song.quality = xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML;
                             if (typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] != "undefined") {
                                 document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] + '-bit/'  + (xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0]/1000) + 'kHz ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] + 'ch';                
                             } else {
                                 document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';
                             }
                         }
+                        if (typeof playHistory[0] != 'undefined') {
+                            if (playHistory[0].title != song.title || playHistory[0].artist != song.artist || playHistory[0].album != song.album || playHistory[0].service != song.service || playHistory[0].quality != song.quality) {
+                                playHistory.unshift(song);
+                            }
+                        } else {
+                            playHistory.unshift(song);
+                        }
+                        console.log(playHistory);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
                                 document.getElementById("togglePause").innerHTML = "Play";
@@ -337,6 +370,7 @@
         var update = 1;
         var call = 1;
         var eTag = "";
+        let playHistory = [];
         longPoll();
         //controls
         const albumCover = document.getElementById('albumcover');
