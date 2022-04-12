@@ -43,6 +43,8 @@
         }
         #controls {
             display: none;
+            flex-wrap: wrap;
+            flex-direction: row;
             margin-left: auto;
             margin-right: auto;
             width: 90vh;
@@ -50,12 +52,12 @@
         }
         #controls button {
             font-size: 3vh;
-            margin-bottom: 3vh;
+            margin: 0 1vh 1vh 0; 
+            height: 4vh;
+            display: inline-block;
         }
         #hideControls {
-            color: white;
-            text-decoration: none;
-            display: block;
+            height: 4vh;
         }
         #receiverON {
             display: none;
@@ -100,7 +102,7 @@
 
             <div id="leftright">
                 <div id="left">
-                    <div id="leftflex">
+                    <div onclick="toggleControls();" id="leftflex">
                         <div id="songTitle"></div>
                         <div id="artistName"></div>
                         <div id="albumTitle"></div>
@@ -119,8 +121,8 @@
                         <button onclick="control('/Pause?toggle=1')" id="togglePause">Play</button>
                         <button onclick="control('/Back')" id="back">Back</button>
                         <button onclick="control('/Skip')" id="skip">Skip</button>
-                        <button onclick="control(VolumeUpUrl)" id="volumeUp">Volume up</button>
-                        <button onclick="control(VolumeDownUrl)" id="volumeDown">Volume down</button>
+                        <button onclick="control(VolumeUpUrl)" id="volumeUp">Vol +</button>
+                        <button onclick="control(VolumeDownUrl)" id="volumeDown">Vol -</button>
                         <div id="actions">
                         </div>
                         <div id="presets">
@@ -129,7 +131,7 @@
                         <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
                         <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
                         <button onclick="location.reload()">Reload app</button>
-                        <a href="#" onclick="toggleControls();" id="hideControls">Back to album art ></a>
+                        <img onclick="toggleControls();" id="hideControls" src="">
                     </div>
                 </div>
             </div>
@@ -264,6 +266,7 @@
                             document.getElementById("albumcover").src = "";
                             song.albumCover = '';
                         }
+                        document.getElementById("hideControls").src = song.albumCover;
                         if (typeof xmlDoc.getElementsByTagName("serviceIcon")[0] != "undefined") {   
                             document.getElementById("serviceIcon").src = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
                             song.serviceIcon = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
@@ -317,17 +320,17 @@
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
                                 document.getElementById("togglePause").innerHTML = "Play";
-                                document.getElementById("togglePause").style.display = 'block';
-                                document.getElementById("back").style.display = 'block';
-                                document.getElementById("skip").style.display = 'block';
+                                document.getElementById("togglePause").style.display = 'inline-block';
+                                document.getElementById("back").style.display = 'inline-block';
+                                document.getElementById("skip").style.display = 'inline-block';
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'play') {
                                 document.getElementById("togglePause").innerHTML = "Pause";
-                                document.getElementById("togglePause").style.display = 'block';
-                                document.getElementById("back").style.display = 'block';
-                                document.getElementById("skip").style.display = 'block';
+                                document.getElementById("togglePause").style.display = 'inline-block';
+                                document.getElementById("back").style.display = 'inline-block';
+                                document.getElementById("skip").style.display = 'inline-block';
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'stream') {
                                 document.getElementById("togglePause").innerHTML = "Pause";
-                                document.getElementById("togglePause").style.display = 'block';
+                                document.getElementById("togglePause").style.display = 'inline-block';
                                 document.getElementById("back").style.display = 'none';
                                 document.getElementById("skip").style.display = 'none';
                             } else {
@@ -345,13 +348,13 @@
                             }
                         }
                         if (receiverOnUrl != '') {
-                            document.getElementById("receiverON").style.display = 'block';
+                            document.getElementById("receiverON").style.display = 'inline-block';
                         }
                         if (receiverOffUrl != '') {
-                            document.getElementById("receiverOFF").style.display = 'block';
+                            document.getElementById("receiverOFF").style.display = 'inline-block';
                         }
                         if (receiverInputBluOSUrl != '') {
-                            document.getElementById("receiverInputBluOS").style.display = 'block';
+                            document.getElementById("receiverInputBluOS").style.display = 'inline-block';
                         }
                         console.log("Update " + update);
                         update = update + 1;
@@ -377,7 +380,7 @@
         const controls = document.getElementById('controls');
         function toggleControls () {
             if (controls.style.display === 'none') {
-                controls.style.display = 'block';
+                controls.style.display = 'flex';
                 albumCover.style.display = 'none';    
             } else {
                 controls.style.display = 'none';
