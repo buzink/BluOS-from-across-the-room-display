@@ -104,18 +104,21 @@
             flex-direction: column;
             overflow: hidden;
         }
-        .playlistsongtitle {
+        .playlistsongtitle { 
             font-size: 3vh;
+            white-space: nowrap;
             text-overflow: ellipsis;
         }
 
         .playlistsongartist {
             font-size: 2vh;
+            white-space: nowrap;
             text-overflow: ellipsis;
         }        
 
         .playlistsongalbum {
             font-size: 2vh;
+            white-space: nowrap;
             text-overflow: ellipsis;
         }
 
@@ -267,48 +270,67 @@
                         } else if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Calm Radio") {
                             if (typeof xmlDoc.getElementsByTagName("title2")[0] != "undefined") {
                                 document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                                song.title = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                             } else {
                                 document.getElementById("songTitle").innerHTML = "";
+                                song.title = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title1")[0] != "undefined") {
                                 document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                                song.station = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                             } else {
                                 document.getElementById("station").innerHTML = "";
+                                song.station = '';
                             }
                             document.getElementById("albumTitle").innerHTML = "";
+                            song.album = '';
                             document.getElementById("artistName").innerHTML = "";
+                            song.artist = '';
                         } else if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "TuneIn") {
                             if (typeof xmlDoc.getElementsByTagName("title2")[0] != "undefined") {       
                                 document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                                song.title = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                             } else {
                                 document.getElementById("songTitle").innerHTML = "";
+                                song.title = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title1")[0] != "undefined") { 
                                 document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                                song.artist = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                             } else {
                                 document.getElementById("artistName").innerHTML = "";
+                                song.artist = '';
                             }    
                             if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") {
                                 document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
+                                song.album = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
                             } else {
                                 document.getElementById("albumTitle").innerHTML = "";
+                                song.album = '';
                             }
                             document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("serviceName")[0].innerHTML;
+                            song.station = xmlDoc.getElementsByTagName("serviceName")[0].innerHTML;
                         } else {
                             if (typeof xmlDoc.getElementsByTagName("title1")[0] != "undefined") {       
                                 document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                                song.title = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                             } else {
                              document.getElementById("songTitle").innerHTML = "";
+                             song.title = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title2")[0] != "undefined") { 
                                 document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                                song.artist = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                             } else {
                                 document.getElementById("artistName").innerHTML = "";
+                                song.artist = "";
                             }    
                             if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") {
                                 document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
+                                song.album = xmlDoc.getElementsByTagName("title3")[0].innerHTML;;
                             } else {
                              document.getElementById("albumTitle").innerHTML = "";
+                             song.album = '';
                             }
                             document.getElementById("station").innerHTML = "";
                         }
@@ -368,7 +390,7 @@
                             }
                         }
                         if (typeof playHistory[0] != 'undefined') {
-                            if (playHistory[0].title != song.title || playHistory[0].artist != song.artist || playHistory[0].album != song.album || playHistory[0].service != song.service || playHistory[0].quality != song.quality) {
+                            if (playHistory[0].title != song.title || playHistory[0].artist != song.artist || playHistory[0].album != song.album || playHistory[0].service != song.service) { // || playHistory[0].quality != song.quality song quality is sometimes undefined
                                 playHistory.unshift(song);
                                 addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service);
                             }
