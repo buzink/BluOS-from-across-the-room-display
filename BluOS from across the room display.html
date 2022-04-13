@@ -50,7 +50,7 @@
             margin-right: auto;
             width: 90vh;
             font-size: 3vh;
-            overflow: scroll;
+            overflow: hidden;
         }
         #actions,#presets {
             display: flex;
@@ -376,7 +376,7 @@
                             playHistory.unshift(song);
                             addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service);
                         }
-                        //console.log(playHistory);
+                        console.log(playHistory);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
                                 document.getElementById("togglePause").innerHTML = "Play";
