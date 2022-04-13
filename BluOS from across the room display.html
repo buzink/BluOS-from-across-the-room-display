@@ -50,6 +50,7 @@
             margin-right: auto;
             width: 90vh;
             font-size: 3vh;
+            overflow: scroll;
         }
         #actions,#presets {
             display: flex;
@@ -75,6 +76,55 @@
         #receiverInputBluOS {
             display: none;
         }
+        #playlist {
+            display: none;
+            flex-direction: column;
+            margin-left: auto;
+            margin-right: auto;
+            gap: 1vh;
+            overflow: scroll;
+            width: 90vh;
+            height: 90vh;
+            font-size: 3vh;
+        }
+        .playlistsong {
+            height: 10vh;
+            display: flex;
+            gap: 1vh;
+            width: 85vh;
+            overflow: hidden;
+        }
+        .playlistalbumcover {
+            height: 10vh;
+            width: 10vh;
+        }
+        .playlistsongmeta {
+            width: 30vh;
+            height: 10vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .playlistsongtitle {
+            font-size: 3vh;
+            text-overflow: ellipsis;
+        }
+
+        .playlistsongartist {
+            font-size: 2vh;
+            text-overflow: ellipsis;
+        }        
+
+        .playlistsongalbum {
+            font-size: 2vh;
+            text-overflow: ellipsis;
+        }
+
+        .playlistsongservice {
+            font-size: 1.5vh;
+            text-overflow: ellipsis;
+        }
+
         #songTitle {
             font-size: 12vh;
             width: 100%;
@@ -132,6 +182,7 @@
                         <button onclick="control(VolumeDownUrl)" id="volumeDown">Vol -</button>
                         <div id="actions">
                         </div>
+                        <button onclick="toggleSongHistory()" id="togglesonghistory">Song History</button>
                         <div id="presets">
                         </div>
                         <button onclick="control(receiverOnUrl)" id="receiverON">ON</button>
@@ -140,6 +191,7 @@
                         <button onclick="location.reload()">Reload app</button>
                         <img onclick="toggleControls();" id="hideControls" src="">
                     </div>
+                    <div id="playlist"></div>
                 </div>
             </div>
 
@@ -319,11 +371,13 @@
                         if (typeof playHistory[0] != 'undefined') {
                             if (playHistory[0].title != song.title || playHistory[0].artist != song.artist || playHistory[0].album != song.album || playHistory[0].service != song.service || playHistory[0].quality != song.quality) {
                                 playHistory.unshift(song);
+                                addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service);
                             }
                         } else {
                             playHistory.unshift(song);
+                            addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service);
                         }
-                        console.log(playHistory);
+                        //console.log(playHistory);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
                                 document.getElementById("togglePause").innerHTML = "Play";
@@ -385,14 +439,39 @@
         //controls
         const albumCover = document.getElementById('albumcover');
         const controls = document.getElementById('controls');
+        const playList = document.getElementById('playlist');
         function toggleControls () {
-            if (controls.style.display === 'none') {
+            if (controls.style.display === 'none' && playList.style.display === 'none' && albumCover.style.display === 'block') {
                 controls.style.display = 'flex';
                 albumCover.style.display = 'none';    
             } else {
                 controls.style.display = 'none';
+                playList.style.display = 'none';
                 albumCover.style.display = 'block'; 
             }
+        }
+        function toggleSongHistory () {
+            if (playList.style.display === 'none') {
+                playList.style.display = 'flex';
+                albumCover.style.display = 'none';
+                controls.style.display = 'none';    
+            } else {
+                controls.style.display = 'flex';
+                playList.style.display = 'none';
+                albumCover.style.display = 'none'; 
+            }
+        }
+        function addSongtoHistory (songTitle, songArtist, songAlbum, albumCover, service) {
+            var songHtml = '<div class="playlistsong">';
+            songHtml += '<img class="playlistalbumcover" src="'+ albumCover +'">';
+            songHtml += '<div class="playlistsongmeta">';
+            songHtml += '<div class="playlistsongtitle">'+ songTitle +'</div>';
+            songHtml += '<div class="playlistsongartist">'+ songArtist +'</div>'; 
+            songHtml += '<div class="playlistsongalbum">'+ songAlbum +'</div>'; 
+            songHtml += '<div class="playlistsongservice">'+ service +'</div>';
+            songHtml += '</div>'; 
+            songHtml += '</div>'; 
+            playList.innerHTML = songHtml + playList.innerHTML;
         }
         function control(message) {    
             var xhttpa = new XMLHttpRequest();
