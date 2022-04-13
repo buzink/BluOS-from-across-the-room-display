@@ -374,7 +374,7 @@
                             }
                         } else {
                             playHistory.unshift(song);
-                            addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service);
+                            addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality);
                         }
                         console.log(playHistory);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
@@ -460,14 +460,14 @@
                 albumCover.style.display = 'none'; 
             }
         }
-        function addSongtoHistory (songTitle, songArtist, songAlbum, albumCover, service) {
+        function addSongtoHistory (songTitle, songArtist, songAlbum, albumCover, service, quality) {
             var songHtml = '<div class="playlistsong">';
             songHtml += '<img class="playlistalbumcover" src="'+ albumCover +'">';
             songHtml += '<div class="playlistsongmeta">';
             songHtml += '<div class="playlistsongtitle">'+ songTitle +'</div>';
             songHtml += '<div class="playlistsongartist">'+ songArtist +'</div>'; 
             songHtml += '<div class="playlistsongalbum">'+ songAlbum +'</div>'; 
-            songHtml += '<div class="playlistsongservice">'+ service +'</div>';
+            songHtml += '<div class="playlistsongservice">'+ service + ' (' + quality + ')</div>';
             songHtml += '</div>'; 
             songHtml += '</div>'; 
             playList.innerHTML = songHtml + playList.innerHTML;
