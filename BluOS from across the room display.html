@@ -100,11 +100,12 @@
             gap: 1vh;
             width: 70vh;
             overflow: hidden;
+            margin-bottom: 1vh;
         }
         .playlistalbumcover {
             height: 10vh;
             width: 10vh;
-            margin: 0 1vh 1vh 0;
+            margin-right: 1vh;
         }
         .playlistsongmeta {
             width: 50vh;
@@ -415,18 +416,20 @@
                         document.getElementById("hideControls").src = song.albumCover;
                         document.getElementById("serviceIcon").src = song.serviceIcon;
                         document.getElementById("quality").innerHTML = song.quality;
-                        if (typeof playHistory[0] === 'undefined') {
-                            playHistory.unshift(song);
-                            addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
-                        } else {
-                            if (playHistory[0].title != song.title || playHistory[0].artist != song.artist || playHistory[0].album != song.album || playHistory[0].service != song.service) { // || playHistory[0].quality != song.quality song quality is sometimes undefined
+                        if (song.title != '' || song.artist != '' || song.album != '') {
+                            if (typeof playHistory[0] === 'undefined') {
                                 playHistory.unshift(song);
                                 addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
                             } else {
-                                playHistory[0].quality = song.quality;
-                                document.getElementsByClassName('playlistsong')[0].remove();
-                                addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
-                                //document.getElementsByClassName('playlistsongservice')[0].innerHTML = song.service + ' (' + song.quality + ')';
+                                if (playHistory[0].title != song.title || playHistory[0].artist != song.artist || playHistory[0].album != song.album || playHistory[0].service != song.service) { // || playHistory[0].quality != song.quality song quality is sometimes undefined
+                                    playHistory.unshift(song);
+                                    addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
+                                } else {
+                                    playHistory[0].quality = song.quality;
+                                    document.getElementsByClassName('playlistsong')[0].remove();
+                                    addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
+                                    //document.getElementsByClassName('playlistsongservice')[0].innerHTML = song.service + ' (' + song.quality + ')';
+                                }  
                             }
                         }
                         //debug
@@ -523,9 +526,9 @@
             songHtml += '<div class="playlistsongartist">'+ songArtist +'</div>'; 
             songHtml += '<div class="playlistsongalbum">'+ songAlbum +'</div>';
             if (serviceicon != 'undefined') {
-                songHtml += '<div class="playlistsongservice"><img id="playlistsongserviceicon" src="'+ serviceicon + '">' + quality + '</div>';
+                songHtml += '<div class="playlistsongservice"><img id="playlistsongserviceicon" src="'+ serviceicon + '">' + station + ' ' + quality + '</div>';
             } else {
-                songHtml += '<div class="playlistsongservice">'+ service + ' ' + quality + '</div>';
+                songHtml += '<div class="playlistsongservice">'+ service + ' ' + station + ' ' + quality + '</div>';
             }
             songHtml += '</div>'; 
             songHtml += '</div>'; 
