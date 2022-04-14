@@ -63,7 +63,14 @@
             font-size: 3vh;
             height: 4vh;
             display: inline-block;
+            width: 12vh;
+            text-align: center;
         }
+
+        #presets button {
+            width: auto;
+        }
+
         #hideControls {
             height: 4vh;
         }
@@ -169,23 +176,23 @@
                 <div id="panel1">
                     <img onclick="toggleControls();" id="albumcover" src=""/>
                     <div id="controls">
-                        <button onclick="control('/Pause?toggle=1')" id="togglePause">Play</button>
+                        <button onclick="control('/Pause?toggle=1')" id="togglePause">Play </button>
                         <button onclick="control('/Back')" id="back">Back</button>
                         <button onclick="control('/Skip')" id="skip">Skip</button>
                         <button onclick="control(VolumeUpUrl)" id="volumeUp">Vol +</button>
                         <button onclick="control(VolumeDownUrl)" id="volumeDown">Vol -</button>
                         <div id="actions">
                         </div>
-                        <button onclick="toggleSongHistory()" id="togglesonghistory">Song History</button>
-                        <div id="presets">
-                        </div>
+                        <button onclick="toggleSongHistory()" id="togglesonghistory">History</button>
                         <button onclick="control(receiverOnUrl)" id="receiverON">ON</button>
                         <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
                         <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
-                        <button onclick="location.reload()">Reload app</button>
+                        <button onclick="location.reload()">Reload</button>
+                        <div id="presets">
+                        </div>
                         <img onclick="toggleControls();" id="hideControls" src="">
                     </div>
-                    <div id="playlist"></div>
+                    <div onclick="toggleSongHistory()" id="playlist"></div>
                 </div>
                 <div id="panel2">
                     <div onclick="toggleControls();" id="panel2flex">
@@ -247,155 +254,165 @@
                         };
                         if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Radio Paradise") {
                             if (typeof xmlDoc.getElementsByTagName("title2")[0] != "undefined") { 
-                                document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                                //document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                                 song.title = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                             } else {
-                                document.getElementById("songTitle").innerHTML = "";
+                                //document.getElementById("songTitle").innerHTML = "";
                                 song.title = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") { 
-                                document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[0];
+                                //document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[0];
                                 song.artist = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[0];
                             } else {
-                                document.getElementById("artistName").innerHTML = "";
+                                //document.getElementById("artistName").innerHTML = "";
                                 song.artist = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") { 
-                                document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[1];
+                                //document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[1];
                                 song.album = xmlDoc.getElementsByTagName("title3")[0].innerHTML.split(" • ")[1];
                             } else {
-                                document.getElementById("albumTitle").innerHTML = "";
+                                //document.getElementById("albumTitle").innerHTML = "";
                                 song.album = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title1")[0] != "undefined") { 
-                                document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                                //document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                                 song.station = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                             } else {
-                                document.getElementById("station").innerHTML = "";
+                                //document.getElementById("station").innerHTML = "";
+                                song.station = '';
                             }
                         } else if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "Calm Radio") {
                             if (typeof xmlDoc.getElementsByTagName("title2")[0] != "undefined") {
-                                document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                                //document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                                 song.title = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                             } else {
-                                document.getElementById("songTitle").innerHTML = "";
+                                //document.getElementById("songTitle").innerHTML = "";
                                 song.title = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title1")[0] != "undefined") {
-                                document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                                //document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                                 song.station = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                             } else {
-                                document.getElementById("station").innerHTML = "";
+                                //document.getElementById("station").innerHTML = "";
                                 song.station = '';
                             }
-                            document.getElementById("albumTitle").innerHTML = "";
+                            //document.getElementById("albumTitle").innerHTML = "";
                             song.album = '';
-                            document.getElementById("artistName").innerHTML = "";
+                            //document.getElementById("artistName").innerHTML = "";
                             song.artist = '';
                         } else if (xmlDoc.getElementsByTagName("serviceName")[0].innerHTML == "TuneIn") {
                             if (typeof xmlDoc.getElementsByTagName("title2")[0] != "undefined") {       
-                                document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                                //document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                                 song.title = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                             } else {
-                                document.getElementById("songTitle").innerHTML = "";
+                                //document.getElementById("songTitle").innerHTML = "";
                                 song.title = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title1")[0] != "undefined") { 
-                                document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                                //document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                                 song.artist = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                             } else {
-                                document.getElementById("artistName").innerHTML = "";
+                                //document.getElementById("artistName").innerHTML = "";
                                 song.artist = '';
                             }    
                             if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") {
-                                document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
+                                //document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
                                 song.album = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
                             } else {
-                                document.getElementById("albumTitle").innerHTML = "";
+                                //document.getElementById("albumTitle").innerHTML = "";
                                 song.album = '';
                             }
-                            document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("serviceName")[0].innerHTML;
+                            //document.getElementById("station").innerHTML = xmlDoc.getElementsByTagName("serviceName")[0].innerHTML;
                             song.station = xmlDoc.getElementsByTagName("serviceName")[0].innerHTML;
                         } else {
                             if (typeof xmlDoc.getElementsByTagName("title1")[0] != "undefined") {       
-                                document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
+                                //document.getElementById("songTitle").innerHTML = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                                 song.title = xmlDoc.getElementsByTagName("title1")[0].innerHTML;
                             } else {
-                             document.getElementById("songTitle").innerHTML = "";
+                             //document.getElementById("songTitle").innerHTML = "";
                              song.title = '';
                             }
                             if (typeof xmlDoc.getElementsByTagName("title2")[0] != "undefined") { 
-                                document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
+                                //document.getElementById("artistName").innerHTML = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                                 song.artist = xmlDoc.getElementsByTagName("title2")[0].innerHTML;
                             } else {
-                                document.getElementById("artistName").innerHTML = "";
+                                //document.getElementById("artistName").innerHTML = "";
                                 song.artist = "";
                             }    
                             if (typeof xmlDoc.getElementsByTagName("title3")[0] != "undefined") {
-                                document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
+                                //document.getElementById("albumTitle").innerHTML = xmlDoc.getElementsByTagName("title3")[0].innerHTML;
                                 song.album = xmlDoc.getElementsByTagName("title3")[0].innerHTML;;
                             } else {
-                             document.getElementById("albumTitle").innerHTML = "";
+                             //document.getElementById("albumTitle").innerHTML = "";
                              song.album = '';
                             }
-                            document.getElementById("station").innerHTML = "";
+                            //document.getElementById("station").innerHTML = "";
+                            song.station = '';
                         }
                         if (typeof xmlDoc.getElementsByTagName("image")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("image")[0].innerHTML.startsWith("http")  ) {
-                             document.getElementById("albumcover").src = xmlDoc.getElementsByTagName("image")[0].innerHTML;
+                             //document.getElementById("albumcover").src = xmlDoc.getElementsByTagName("image")[0].innerHTML;
                              song.albumCover = xmlDoc.getElementsByTagName("image")[0].innerHTML;
                             } else {
-                            document.getElementById("albumcover").src = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("image")[0].innerHTML;
+                            //document.getElementById("albumcover").src = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("image")[0].innerHTML;
                             song.albumCover = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("image")[0].innerHTML;
                             }
                         } else {
-                            document.getElementById("albumcover").src = "";
+                            //document.getElementById("albumcover").src = "";
                             song.albumCover = '';
                         }
                         document.getElementById("hideControls").src = song.albumCover;
                         if (typeof xmlDoc.getElementsByTagName("serviceIcon")[0] != "undefined") {   
-                            document.getElementById("serviceIcon").src = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
+                            //document.getElementById("serviceIcon").src = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
                             song.serviceIcon = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
                         } else {
-                            document.getElementById("serviceIcon").src = "";
+                            //document.getElementById("serviceIcon").src = "";
                             song.serviceIcon = '';
                         }
                         if (typeof xmlDoc.getElementsByTagName("quality")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "mqa") {
-                                document.getElementById("quality").innerHTML = "MQA <span style=\"color:#4dbb63;\">•</span>";
+                                //document.getElementById("quality").innerHTML = "MQA <span style=\"color:#4dbb63;\">•</span>";
                                 song.quality = "MQA <span style=\"color:#4dbb63;\">•</span>";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "mqaAuthored") {
-                                document.getElementById("quality").innerHTML = "MQA <span style=\"color:#3ec4e4;\">•</span>";
+                                //document.getElementById("quality").innerHTML = "MQA <span style=\"color:#3ec4e4;\">•</span>";
                                 song.quality = "MQA <span style=\"color:#3ec4e4;\">•</span>";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "hd") {
-                                document.getElementById("quality").innerHTML = "Hi&middot;Res";
+                                //document.getElementById("quality").innerHTML = "Hi&middot;Res";
                                 song.quality = "Hi&middot;Res";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "cd") {
-                                document.getElementById("quality").innerHTML = "CD";
+                                //document.getElementById("quality").innerHTML = "CD";
                                 song.quality = "CD";
                             } else if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "dolbyAudio") {
-                                document.getElementById("quality").innerHTML = "DolbyDigital";
+                                //document.getElementById("quality").innerHTML = "DolbyDigital";
                                 song.quality = "DolbyDigital";
                             } else {
-                                document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("quality")[0].innerHTML;
+                                //document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("quality")[0].innerHTML;
                                 song.quality = xmlDoc.getElementsByTagName("quality")[0].innerHTML;
                             }
                         } else if (typeof xmlDoc.getElementsByTagName("streamUrl")[0] != "undefined") {     
-                            document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("streamUrl")[0].innerHTML;
+                            //document.getElementById("quality").innerHTML = xmlDoc.getElementsByTagName("streamUrl")[0].innerHTML;
                             song.quality = xmlDoc.getElementsByTagName("streamUrl")[0].innerHTML;            
                         } else {
-                            document.getElementById("quality").innerHTML = "";
+                            //document.getElementById("quality").innerHTML = "";
                             song.quality = '';
                         }
                         if (typeof xmlDoc.getElementsByTagName("streamFormat")[0] != "undefined" && xmlDoc.getElementsByTagName("quality")[0].innerHTML != "mqa" && xmlDoc.getElementsByTagName("quality")[0].innerHTML != "mqaAuthored") {
                             if (typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] != "undefined") {
-                                document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] + '-bit/'  + (xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0]/1000) + 'kHz ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] + 'ch';                
+                                //document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] + '-bit/'  + (xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0]/1000) + 'kHz ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] + 'ch';                
                                 song.quality += ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] + '-bit/'  + (xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0]/1000) + 'kHz ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] + 'ch';
                             } else {
-                                document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';
+                                //document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';
                                 song.quality += ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';
                             }
                         }
+                        document.getElementById("songTitle").innerHTML = song.title ;
+                        document.getElementById("artistName").innerHTML = song.artist;
+                        document.getElementById("albumTitle").innerHTML = song.album;
+                        document.getElementById("station").innerHTML = song.station;
+                        document.getElementById("albumcover").src = song.albumCover;
+                        document.getElementById("hideControls").src = song.albumCover;
+                        document.getElementById("serviceIcon").src = song.serviceIcon;
+                        document.getElementById("quality").innerHTML = song.quality;
                         if (typeof playHistory[0] === 'undefined') {
                             playHistory.unshift(song);
                             addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
@@ -405,7 +422,9 @@
                                 addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
                             } else {
                                 playHistory[0].quality = song.quality;
-                                document.getElementsByClassName('playlistsongservice')[0].innerHTML = song.service + ' (' + song.quality + ')';
+                                document.getElementsByClassName('playlistsong')[0].remove();
+                                addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
+                                //document.getElementsByClassName('playlistsongservice')[0].innerHTML = song.service + ' (' + song.quality + ')';
                             }
                         }
                         //debug
@@ -413,7 +432,7 @@
                         console.log(xmlDoc);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
-                                document.getElementById("togglePause").innerHTML = "Play";
+                                document.getElementById("togglePause").innerHTML = "Play ";
                                 document.getElementById("togglePause").style.display = 'inline-block';
                                 document.getElementById("back").style.display = 'inline-block';
                                 document.getElementById("skip").style.display = 'inline-block';
