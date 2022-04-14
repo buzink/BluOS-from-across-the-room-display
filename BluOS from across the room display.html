@@ -13,12 +13,12 @@
             justify-items: center;
             height: 98vh;
         }
-        #leftright {
+        #panel2panel1 {
             display: flex;
             height: 90vh;
             width: 100%;
         }
-        #left {
+        #panel2 {
             width: 60%;
             padding-left: 3vh;
             padding-right: 3vh;
@@ -27,9 +27,9 @@
             align-items: center;
             justify-items: center;
         }
-        #right {
+        #panel1 {
             width: 40%;
-            padding-right: 3vh;
+            padding-left: 3vh;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -127,6 +127,12 @@
             text-overflow: ellipsis;
         }
 
+        #playlistsongserviceicon {
+            height: 1.5vh;
+            width: 1.5vh;
+            margin-right: 0.5vh;
+        }
+
         #songTitle {
             font-size: 12vh;
             width: 100%;
@@ -159,22 +165,8 @@
         </style>
     <body>
 
-            <div id="leftright">
-                <div id="left">
-                    <div onclick="toggleControls();" id="leftflex">
-                        <div id="songTitle"></div>
-                        <div id="artistName"></div>
-                        <div id="albumTitle"></div>
-                        <div id="meta">
-                            <img id="serviceIcon" src=""/>
-                            <div id="station">
-                            </div>
-                            <div id="quality">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="right">
+            <div id="panel2panel1">
+                <div id="panel1">
                     <img onclick="toggleControls();" id="albumcover" src=""/>
                     <div id="controls">
                         <button onclick="control('/Pause?toggle=1')" id="togglePause">Play</button>
@@ -194,6 +186,20 @@
                         <img onclick="toggleControls();" id="hideControls" src="">
                     </div>
                     <div id="playlist"></div>
+                </div>
+                <div id="panel2">
+                    <div onclick="toggleControls();" id="panel2flex">
+                        <div id="songTitle"></div>
+                        <div id="artistName"></div>
+                        <div id="albumTitle"></div>
+                        <div id="meta">
+                            <img id="serviceIcon" src=""/>
+                            <div id="station">
+                            </div>
+                            <div id="quality">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -382,23 +388,29 @@
                             song.quality = '';
                         }
                         if (typeof xmlDoc.getElementsByTagName("streamFormat")[0] != "undefined" && xmlDoc.getElementsByTagName("quality")[0].innerHTML != "mqa" && xmlDoc.getElementsByTagName("quality")[0].innerHTML != "mqaAuthored") {
-                            song.quality = xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML;
                             if (typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] != "undefined" &&  typeof xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] != "undefined") {
                                 document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] + '-bit/'  + (xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0]/1000) + 'kHz ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] + 'ch';                
+                                song.quality += ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[0] + ' ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[1] + '-bit/'  + (xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[0]/1000) + 'kHz ' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML.split(' ')[1].split('/')[2] + 'ch';
                             } else {
                                 document.getElementById("quality").innerHTML = document.getElementById("quality").innerHTML + ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';
+                                song.quality += ' (' + xmlDoc.getElementsByTagName("streamFormat")[0].innerHTML + ')';
                             }
                         }
-                        if (typeof playHistory[0] != 'undefined') {
+                        if (typeof playHistory[0] === 'undefined') {
+                            playHistory.unshift(song);
+                            addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
+                        } else {
                             if (playHistory[0].title != song.title || playHistory[0].artist != song.artist || playHistory[0].album != song.album || playHistory[0].service != song.service) { // || playHistory[0].quality != song.quality song quality is sometimes undefined
                                 playHistory.unshift(song);
-                                addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service);
+                                addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality,song.time,song.station,song.serviceIcon);
+                            } else {
+                                playHistory[0].quality = song.quality;
+                                document.getElementsByClassName('playlistsongservice')[0].innerHTML = song.service + ' (' + song.quality + ')';
                             }
-                        } else {
-                            playHistory.unshift(song);
-                            addSongtoHistory(song.title,song.artist,song.album,song.albumCover,song.service,song.quality);
                         }
-                        console.log(playHistory);
+                        //debug
+                        console.log(song);
+                        console.log(xmlDoc);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
                                 document.getElementById("togglePause").innerHTML = "Play";
@@ -482,14 +494,18 @@
                 albumCover.style.display = 'none'; 
             }
         }
-        function addSongtoHistory (songTitle, songArtist, songAlbum, albumCover, service, quality) {
-            var songHtml = '<div class="playlistsong">';
+        function addSongtoHistory (songTitle, songArtist, songAlbum, albumCover, service, quality, time, station, serviceicon) {
+            var songHtml = '<div id="t' + time.getTime() + '" class="playlistsong">';
             songHtml += '<img class="playlistalbumcover" src="'+ albumCover +'">';
             songHtml += '<div class="playlistsongmeta">';
             songHtml += '<div class="playlistsongtitle">'+ songTitle +'</div>';
             songHtml += '<div class="playlistsongartist">'+ songArtist +'</div>'; 
-            songHtml += '<div class="playlistsongalbum">'+ songAlbum +'</div>'; 
-            songHtml += '<div class="playlistsongservice">'+ service + ' (' + quality + ')</div>';
+            songHtml += '<div class="playlistsongalbum">'+ songAlbum +'</div>';
+            if (serviceicon != 'undefined') {
+                songHtml += '<div class="playlistsongservice"><img id="playlistsongserviceicon" src="'+ serviceicon + '">' + quality + '</div>';
+            } else {
+                songHtml += '<div class="playlistsongservice">'+ service + ' ' + quality + '</div>';
+            }
             songHtml += '</div>'; 
             songHtml += '</div>'; 
             playList.innerHTML = songHtml + playList.innerHTML;
