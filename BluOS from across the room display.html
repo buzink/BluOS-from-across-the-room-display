@@ -20,6 +20,8 @@
             height: 90vh;
             width: 96%;
             margin: 0 2% 0 2%;
+            min-width: 0;
+            flex-basis: 90%;
         }
 
         .flexdirection {
@@ -28,18 +30,16 @@
 
         #panel2 {
             width: 59%;
-            /*margin-left: 3%;
-            margin-right: 3%;*/
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-items: center;
             margin-left: 1%;
+            min-width: 0;
+            flex-basis: 59%;
         }
         #panel1 {
             width:39%;
-            /*margin-left: 3%;
-            margin-right: 3%;*/
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -149,36 +149,41 @@
 
         #songTitle {
             font-size: 12vh;
-            width: 100%;
+            width: 59vw;
+            line-height: 13.5vh;
             max-height: 27vh;
             overflow: hidden;
             text-overflow: ellipsis;
+            -webkit-line-clamp: 2; /* number of lines to show */
+            -webkit-box-orient: vertical;
         }
         #artistName {
             font-size: 8vh;
-            width: 100%;
+            width: 59vw;
             height: 9vh;
             margin-top: 3vh;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
         }
         #albumTitle {
             font-size: 5vh;
             margin-top: 3vh;
-            width: 100%;
+            width: 59vw;
             height: 6vh;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
         }
         #meta {
             display: flex;
             margin-top: 3vh;
             font-size: 3vh;
-            width: 100%;
+            width: 59vw;
             height: 4vh;
-            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
         }
         #serviceIcon {
             height: 30px;
@@ -189,9 +194,9 @@
         }
         #quality {
             margin-left: 1vh;
-            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
         }
         /*@media screen and (max-width: 500px)*/
         @media (orientation: portrait) {
@@ -202,13 +207,16 @@
 
             }
             #panel1 {
-                width: 94%;
+                width: 94vw;
                 height: 50vh;
             }
             #panel2 {
-                width: 94%;
+                width: 94vw;
                 height: 50vh;
             }
+            #albumcover {
+            width: 100%;
+        }
         }
         </style>
     <body>
