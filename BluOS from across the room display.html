@@ -12,43 +12,49 @@
             align-items: center;
             justify-items: center;
             height: 98vh;
+            overflow: hidden;
         }
         #panel2panel1 {
             display: flex;
+            gap: 2%;
             height: 90vh;
-            width: 100%;
+            width: 96%;
+            margin: 0 2% 0 2%;
         }
+
+        .flexdirection {
+            flex-direction: row;
+        }
+
         #panel2 {
-            width: 60%;
-            padding-left: 3vh;
-            padding-right: 3vh;
+            width: 59%;
+            /*margin-left: 3%;
+            margin-right: 3%;*/
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-items: center;
         }
         #panel1 {
-            width: 40%;
-            padding-left: 3vh;
+            width:39%;
+            /*margin-left: 3%;
+            margin-right: 3%;*/
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-items: center; 
+            justify-items: center;
+            overflow: hidden;
         }
         #albumcover {
             display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: 90vh;
+            width: 100%;
         }
         #controls {
             display: none;
             flex-wrap: wrap;
             flex-direction: row;
             gap: 1vh;
-            margin-left: auto;
-            margin-right: auto;
-            width: 90vh;
+            width: 100%;
             font-size: 3vh;
             overflow: hidden;
         }
@@ -87,18 +93,16 @@
         #playlist {
             display: none;
             flex-direction: column;
-            margin-left: auto;
-            margin-right: auto;
             gap: 1vh;
             overflow: hidden;
-            width: 90vh;
+            width: 100%;
             font-size: 3vh;
         }
         .playlistsong {
             height: 10vh;
             display: flex;
             gap: 1vh;
-            width: 70vh;
+            width: 100%;
             overflow: hidden;
             margin-bottom: 1vh;
         }
@@ -108,7 +112,6 @@
             margin-right: 1vh;
         }
         .playlistsongmeta {
-            width: 50vh;
             height: 10vh;
             display: flex;
             flex-direction: column;
@@ -146,36 +149,70 @@
         #songTitle {
             font-size: 12vh;
             width: 100%;
+            max-height: 27vh;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         #artistName {
             font-size: 8vh;
             width: 100%;
+            height: 9vh;
             margin-top: 3vh;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         #albumTitle {
             font-size: 5vh;
             margin-top: 3vh;
             width: 100%;
+            height: 6vh;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         #meta {
             display: flex;
             margin-top: 3vh;
             font-size: 3vh;
             width: 100%;
+            height: 4vh;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         #serviceIcon {
             height: 30px;
         }
         #station {
             margin-left: 1vh;
+            white-space: nowrap;
         }
         #quality {
             margin-left: 1vh;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        /*@media screen and (max-width: 500px)*/
+        @media (orientation: portrait) {
+            .flex-direction {
+                flex-direction:column;
+            }
+            #panel2panel1 {
+
+            }
+            #panel1 {
+                width: 94%;
+                height: 50vh;
+            }
+            #panel2 {
+                width: 94%;
+                height: 50vh;
+            }
         }
         </style>
     <body>
 
-            <div id="panel2panel1">
+            <div id="panel2panel1" class="flex-direction">
                 <div id="panel1">
                     <img onclick="toggleControls();" id="albumcover" src=""/>
                     <div id="controls">
