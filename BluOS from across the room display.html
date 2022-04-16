@@ -186,7 +186,9 @@
             white-space: nowrap;
         }
         #serviceIcon {
-            height: 30px;
+            width: 3vh;
+            height: 3vh;
+            overflow: hidden;
         }
         #station {
             margin-left: 1vh;
@@ -203,9 +205,6 @@
             .flex-direction {
                 flex-direction:column;
             }
-            #panel2panel1 {
-
-            }
             #panel1 {
                 width: 94vw;
                 height: 50vh;
@@ -215,8 +214,32 @@
                 height: 50vh;
             }
             #albumcover {
-            width: 100%;
-        }
+                height: 100%;
+                width: auto;
+                margin: 0 auto 0 auto;
+            }
+            #songTitle {
+                font-size: 10vw;
+                line-height: 11vw;
+                max-height: 22vw;
+            }
+            #artistName {
+                font-size: 6vw;
+                height: 7vw;
+            }
+            #albumTitle {
+                font-size: 3vw;
+                height: 7vw;  
+            }
+            #meta {
+                font-size: 1vw;
+                height: 2vw;
+            }
+            #serviceIcon {
+                width: 2vw;
+                height: 2vw;
+                overflow: hidden;
+            }
         }
         </style>
     <body>
