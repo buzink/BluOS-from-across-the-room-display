@@ -66,7 +66,7 @@
             scrollbar-width: none;  /* Hide scrollbar for Firefox */
         }
         /* Hide scrollbar for Chrome, Safari and Opera */
-        #controls::-webkit-scrollbar,#playlist::-webkit-scrollbar {
+        #controls::-webkit-scrollbar,#playlist::-webkit-scrollbar,#playqueue::-webkit-scrollbar {
             display: none;
         }
         #actions,#presets {
@@ -76,11 +76,10 @@
             gap: 1vh;
         }
 
-        #controls button {
+        #controls button, #playlist button, #playqueue button {
             font-size: 3vh;
-            height: 4vh;
-            /*display: inline-block;*/
-            width: 12vh;
+            height: auto;
+            width: auto;
             text-align: center;
             margin: 0 1vh 1vh 0;
         }
@@ -103,14 +102,13 @@
         }
         #playqueue {
             display: none;
-            display: none;
             flex-direction: column;
             flex-wrap: nowrap;
             /*align-items: flex-start;*/
             gap: 1vh;
             width: 100%;
             height: 100%;
-            font-size: 3vh;
+            font-size: 2vh;
             overflow:scroll;
             overflow-y: scroll;
             overflow-x: hidden;
@@ -125,7 +123,7 @@
             gap: 1vh;
             width: 100%;
             height: 100%;
-            font-size: 3vh;
+            font-size: 2vh;
             overflow:scroll;
             overflow-y: scroll;
             overflow-x: hidden;
@@ -135,6 +133,7 @@
         .playlistsong {
             height: 10vh;
             display: flex;
+            font-size: 3vh;
             gap: 1vh;
             width: 100%;
             margin-bottom: 1vh;
@@ -294,21 +293,21 @@
                         <button onclick="control(VolumeDownUrl)" id="volumeDown">Vol -</button>
                         <div id="actions">
                         </div>
-                        <button onclick="toggleSongHistory()" id="togglesonghistory">History</button>
+                        <button onclick="loadPanel1View('playlist')" id="togglesonghistory">History</button>
                         <button onclick="control(receiverOnUrl)" id="receiverON">ON</button>
                         <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
                         <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
-                        <button onclick="togglePlayQueue()">Queue</button>
+                        <button onclick="showPlayQueue()">Queue</button>
                         <button onclick="location.reload()">Reload</button>
                         <div id="presets">
                         </div>
                         <img onclick="toggleControls();" id="hideControls" src="">
                     </div>
-                    <div onclick="toggleSongHistory()" id="playlist"></div>
-                    <div onclick="" id="playqueue"></div>
+                    <div id="playlist"></div>
+                    <div id="playqueue"></div>
                 </div>
-                <div id="panel2">
-                    <div onclick="toggleControls();" id="panel2flex">
+                <div onclick="toggleControls()" id="panel2">
+                    <div id="panel2flex">
                         <div id="songTitle"></div>
                         <div id="artistName"></div>
                         <div id="albumTitle"></div>
@@ -478,9 +477,11 @@
                         if (typeof xmlDoc.getElementsByTagName("serviceIcon")[0] != "undefined") {   
                             //document.getElementById("serviceIcon").src = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
                             song.serviceIcon = "http://" + ipAddress + ":" + port + xmlDoc.getElementsByTagName("serviceIcon")[0].innerHTML;
+                            document.getElementById("serviceIcon").style = 'display:block;';
                         } else {
                             //document.getElementById("serviceIcon").src = "";
                             song.serviceIcon = '';
+                            document.getElementById("serviceIcon").style = 'display:none;';
                         }
                         if (typeof xmlDoc.getElementsByTagName("quality")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("quality")[0].innerHTML == "mqa") {
@@ -607,42 +608,37 @@
         const albumCover = document.getElementById('albumcover');
         const controls = document.getElementById('controls');
         const playList = document.getElementById('playlist');
-        const playqueue = document.getElementById('playqueue');
+        const playQueue = document.getElementById('playqueue');
         function toggleControls () {
-            if (controls.style.display === 'none' && playList.style.display === 'none' && playqueue.style.display === 'none' && albumCover.style.display === 'block') {
-                controls.style.display = 'flex';
-                albumCover.style.display = 'none';    
+            if (albumCover.style.display === 'none') {
+                loadPanel1View ('albumcover');   
             } else {
-                controls.style.display = 'none';
-                playList.style.display = 'none';
-                playqueue.style.display = 'none';
-                albumCover.style.display = 'block'; 
+                loadPanel1View ('controls'); 
             }
         }
-        function toggleSongHistory () {
-            if (playList.style.display === 'none') {
-                playList.style.display = 'flex';
-                albumCover.style.display = 'none';
-                controls.style.display = 'none';    
-            } else {
-                controls.style.display = 'flex';
-                playList.style.display = 'none';
-                albumCover.style.display = 'none'; 
-            }
+        function showPlayQueue () {
+            getPlayQueue();
+            loadPanel1View ('playqueue');
         }
-        function togglePlayQueue () {
-            if (playqueue.style.display === 'none') {
-                getPlayQueue();
-                playqueue.style.display = 'flex';
-                playList.style.display = 'none';
-                albumCover.style.display = 'none';
-                controls.style.display = 'none';    
-            } else {
-                controls.style.display = 'flex';
-                playqueue.style.display = 'none';
-                albumCover.style.display = 'none';
-                playList.style.display = 'none'; 
-            }
+        function loadPanel1View (view) {
+            controls.style.display = 'none';
+            playQueue.style.display = 'none';
+            albumCover.style.display = 'none';
+            playList.style.display = 'none';
+            switch (view) {
+                case 'controls':
+                    controls.style.display = 'flex';
+                    break;
+                case 'playqueue':
+                    playQueue.style.display = 'flex';
+                    break;
+                case 'playlist':
+                    playList.style.display = 'flex';
+                    break;    
+                default:
+                    albumCover.style.display = 'block';
+                    break;
+            } 
         }
         function addSongtoHistory (songTitle, songArtist, songAlbum, albumCover, service, quality, time, station, serviceicon) {
             var songHtml = '<div id="t' + time.getTime() + '" class="playlistsong">';
@@ -660,7 +656,7 @@
             songHtml += '</div>'; 
             playList.innerHTML = songHtml + playList.innerHTML;
         }
-        function addSongToQueue (songTitle, songArtist, songAlbum, albumCover, service, quality, songid, station, serviceicon) {
+        function addSongToQueue (songTitle, songArtist, songAlbum, albumCover, service, quality, songid, id) {
             var songHtml = '<div class="playlistsong">';
             ///Artwork?service=Qobuz&songid=Qobuz%3A10550089
             songHtml += '<img class="playlistalbumcover" src="'+ url +'/Artwork?service=' + service + '&songid=' + songid + '">';
@@ -669,13 +665,15 @@
             songHtml += '<div class="playlistsongartist">'+ songArtist +'</div>'; 
             songHtml += '<div class="playlistsongalbum">'+ songAlbum +'</div>';
             if (typeof serviceicon != 'undefined' && serviceicon != '') {
-                songHtml += '<div class="playlistsongservice"><img id="playlistsongserviceicon" src="'+ serviceicon + '">' + station + ' ' + quality + '</div>';
+                songHtml += '<div class="playlistsongservice"><img id="playlistsongserviceicon" src="'+ serviceicon + '">' + quality + ' ';
             } else {
-                songHtml += '<div class="playlistsongservice">'+ service + ' ' + station + ' ' + quality + '</div>';
+                songHtml += '<div class="playlistsongservice">'+ service + ' ' + quality + ' ';
             }
+            songHtml += "<span onclick=\"removeFromQueue(" + id + ")\" class=\"removefromqueue\">&CircleTimes;</span>";
+            songHtml += '</div>';
             songHtml += '</div>'; 
             songHtml += '</div>'; 
-            playqueue.innerHTML = songHtml + playqueue.innerHTML;
+            playQueue.innerHTML = songHtml + playQueue.innerHTML;
         }
         function control(message) {    
             var xhttpa = new XMLHttpRequest();
@@ -701,18 +699,35 @@
                 if (xhttpQ.readyState == 4) {
                     if(xhttpQ.status == 200) {
                         var xmlDocQ = xhttpQ.responseXML;
-                        playqueue.innerHTML = '';
-                        console.log(xmlDocQ.getElementsByTagName("song").length);
-                       if (typeof xmlDocQ.getElementsByTagName("song")[0] != "undefined") {
-                            for (i=0; i < xmlDocQ.getElementsByTagName("song").length && i < 100; i++) {
-                                addSongToQueue(xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("title")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("art")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("alb")[0].innerHTML, '', xmlDocQ.getElementsByTagName("song")[i].getAttribute('service'), xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("quality")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getAttribute('songid'), '', '');
+                        playQueue.innerHTML = '';
+                        const queueLength = xmlDocQ.getElementsByTagName("song").length;
+                        //console.log(xmlDocQ.getElementsByTagName("song").length);
+                        i=0;
+                        if (typeof xmlDocQ.getElementsByTagName("song")[0] != "undefined") {
+                            for (i=0; i < queueLength && i < 100; i++) {
+                                addSongToQueue(xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("title")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("art")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("alb")[0].innerHTML, '', xmlDocQ.getElementsByTagName("song")[i].getAttribute('service'), xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("quality")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getAttribute('songid'),xmlDocQ.getElementsByTagName("song")[i].getAttribute('id'));
                             }
                         }
-                        playqueue.innerHTML += 'Shown ' + i + ' of ' + xmlDocQ.getElementsByTagName("song").length + ' items';
+                        if (queueLength > 0) {
+                            playQueue.innerHTML += '<p>Shown ' + i + ' of ' + xmlDocQ.getElementsByTagName("song").length + ' items</p>';
+                            playQueue.innerHTML += '<button onclick="clearQueue()" id="clearqueue">Clear</button>';
+                        } else {
+                            playQueue.innerHTML += '<p>There are no songs in the play queue</p>';
+                        }
+                        playQueue.innerHTML += '<button onclick="loadPanel1View(\'controls\')" id="showControls">Back</button>';
+
                     }
                 }     
             };
 
+        }
+        function clearQueue() {
+            control('/Clear');
+            getPlayQueue();
+        }
+        function removeFromQueue (id) {
+            control('/Delete?id=' + id);
+            getPlayQueue();
         }
         function listpresets() {    
             var xhttpP = new XMLHttpRequest();
