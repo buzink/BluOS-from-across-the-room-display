@@ -702,11 +702,13 @@
                     if(xhttpQ.status == 200) {
                         var xmlDocQ = xhttpQ.responseXML;
                         playqueue.innerHTML = '';
+                        console.log(xmlDocQ.getElementsByTagName("song").length);
                        if (typeof xmlDocQ.getElementsByTagName("song")[0] != "undefined") {
-                            for (i=0; i < xmlDocQ.getElementsByTagName("song").length; i++) {
+                            for (i=0; i < xmlDocQ.getElementsByTagName("song").length && i < 100; i++) {
                                 addSongToQueue(xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("title")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("art")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("alb")[0].innerHTML, '', xmlDocQ.getElementsByTagName("song")[i].getAttribute('service'), xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("quality")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getAttribute('songid'), '', '');
                             }
                         }
+                        playqueue.innerHTML += 'Shown ' + i + ' of ' + xmlDocQ.getElementsByTagName("song").length + ' items';
                     }
                 }     
             };
