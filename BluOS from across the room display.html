@@ -54,7 +54,9 @@
             display: none;
             flex-wrap: wrap;
             flex-direction: row;
-            gap: 1vh;
+            align-items: center;
+            justify-items: flex-start;
+            /*gap: 1vh;*/
             width: 100%;
             height: 100%;
             font-size: 3vh;
@@ -77,7 +79,7 @@
         #controls button {
             font-size: 3vh;
             height: 4vh;
-            display: inline-block;
+            /*display: inline-block;*/
             width: 12vh;
             text-align: center;
             margin: 0 1vh 1vh 0;
@@ -98,6 +100,22 @@
         }
         #receiverInputBluOS {
             display: none;
+        }
+        #playqueue {
+            display: none;
+            display: none;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            /*align-items: flex-start;*/
+            gap: 1vh;
+            width: 100%;
+            height: 100%;
+            font-size: 3vh;
+            overflow:scroll;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+            scrollbar-width: none;  /* Hide scrollbar for Firefox */
         }
         #playlist {
             display: none;
@@ -236,22 +254,26 @@
                 font-size: 10vw;
                 line-height: 11vw;
                 max-height: 22vw;
+                width: 94vw;
             }
             #artistName {
-                font-size: 6vw;
-                height: 7vw;
+                font-size: 8vw;
+                height: 9vw;
+                width: 94vw;
             }
             #albumTitle {
-                font-size: 3vw;
-                height: 7vw;  
+                font-size: 6vw;
+                height: 7vw;
+                width: 94vw;  
             }
             #meta {
-                font-size: 1vw;
-                height: 2vw;
+                font-size: 4vw;
+                height: 5vw;
+                width: 94vw;
             }
             #serviceIcon {
-                width: 2vw;
-                height: 2vw;
+                width: 4vw;
+                height: 4vw;
                 overflow: hidden;
             }
             #controls {
@@ -276,12 +298,14 @@
                         <button onclick="control(receiverOnUrl)" id="receiverON">ON</button>
                         <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
                         <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
+                        <button onclick="togglePlayQueue()">Queue</button>
                         <button onclick="location.reload()">Reload</button>
                         <div id="presets">
                         </div>
                         <img onclick="toggleControls();" id="hideControls" src="">
                     </div>
                     <div onclick="toggleSongHistory()" id="playlist"></div>
+                    <div onclick="" id="playqueue"></div>
                 </div>
                 <div id="panel2">
                     <div onclick="toggleControls();" id="panel2flex">
@@ -583,13 +607,15 @@
         const albumCover = document.getElementById('albumcover');
         const controls = document.getElementById('controls');
         const playList = document.getElementById('playlist');
+        const playqueue = document.getElementById('playqueue');
         function toggleControls () {
-            if (controls.style.display === 'none' && playList.style.display === 'none' && albumCover.style.display === 'block') {
+            if (controls.style.display === 'none' && playList.style.display === 'none' && playqueue.style.display === 'none' && albumCover.style.display === 'block') {
                 controls.style.display = 'flex';
                 albumCover.style.display = 'none';    
             } else {
                 controls.style.display = 'none';
                 playList.style.display = 'none';
+                playqueue.style.display = 'none';
                 albumCover.style.display = 'block'; 
             }
         }
@@ -604,6 +630,20 @@
                 albumCover.style.display = 'none'; 
             }
         }
+        function togglePlayQueue () {
+            if (playqueue.style.display === 'none') {
+                getPlayQueue();
+                playqueue.style.display = 'flex';
+                playList.style.display = 'none';
+                albumCover.style.display = 'none';
+                controls.style.display = 'none';    
+            } else {
+                controls.style.display = 'flex';
+                playqueue.style.display = 'none';
+                albumCover.style.display = 'none';
+                playList.style.display = 'none'; 
+            }
+        }
         function addSongtoHistory (songTitle, songArtist, songAlbum, albumCover, service, quality, time, station, serviceicon) {
             var songHtml = '<div id="t' + time.getTime() + '" class="playlistsong">';
             songHtml += '<img class="playlistalbumcover" src="'+ albumCover +'">';
@@ -611,7 +651,7 @@
             songHtml += '<div class="playlistsongtitle">'+ songTitle +'</div>';
             songHtml += '<div class="playlistsongartist">'+ songArtist +'</div>'; 
             songHtml += '<div class="playlistsongalbum">'+ songAlbum +'</div>';
-            if (serviceicon != 'undefined') {
+            if (typeof serviceicon != 'undefined' && serviceicon != '') {
                 songHtml += '<div class="playlistsongservice"><img id="playlistsongserviceicon" src="'+ serviceicon + '">' + station + ' ' + quality + '</div>';
             } else {
                 songHtml += '<div class="playlistsongservice">'+ service + ' ' + station + ' ' + quality + '</div>';
@@ -619,6 +659,23 @@
             songHtml += '</div>'; 
             songHtml += '</div>'; 
             playList.innerHTML = songHtml + playList.innerHTML;
+        }
+        function addSongToQueue (songTitle, songArtist, songAlbum, albumCover, service, quality, songid, station, serviceicon) {
+            var songHtml = '<div class="playlistsong">';
+            ///Artwork?service=Qobuz&songid=Qobuz%3A10550089
+            songHtml += '<img class="playlistalbumcover" src="'+ url +'/Artwork?service=' + service + '&songid=' + songid + '">';
+            songHtml += '<div class="playlistsongmeta">';
+            songHtml += '<div class="playlistsongtitle">'+ songTitle +'</div>';
+            songHtml += '<div class="playlistsongartist">'+ songArtist +'</div>'; 
+            songHtml += '<div class="playlistsongalbum">'+ songAlbum +'</div>';
+            if (typeof serviceicon != 'undefined' && serviceicon != '') {
+                songHtml += '<div class="playlistsongservice"><img id="playlistsongserviceicon" src="'+ serviceicon + '">' + station + ' ' + quality + '</div>';
+            } else {
+                songHtml += '<div class="playlistsongservice">'+ service + ' ' + station + ' ' + quality + '</div>';
+            }
+            songHtml += '</div>'; 
+            songHtml += '</div>'; 
+            playqueue.innerHTML = songHtml + playqueue.innerHTML;
         }
         function control(message) {    
             var xhttpa = new XMLHttpRequest();
@@ -635,6 +692,25 @@
                     }
                 }     
             };
+        }
+        function getPlayQueue() {
+            var xhttpQ = new XMLHttpRequest();
+            xhttpQ.open("GET", url + '/Playlist', true);
+            xhttpQ.send();
+            xhttpQ.onreadystatechange = function() {
+                if (xhttpQ.readyState == 4) {
+                    if(xhttpQ.status == 200) {
+                        var xmlDocQ = xhttpQ.responseXML;
+                        playqueue.innerHTML = '';
+                       if (typeof xmlDocQ.getElementsByTagName("song")[0] != "undefined") {
+                            for (i=0; i < xmlDocQ.getElementsByTagName("song").length; i++) {
+                                addSongToQueue(xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("title")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("art")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("alb")[0].innerHTML, '', xmlDocQ.getElementsByTagName("song")[i].getAttribute('service'), xmlDocQ.getElementsByTagName("song")[i].getElementsByTagName("quality")[0].innerHTML, xmlDocQ.getElementsByTagName("song")[i].getAttribute('songid'), '', '');
+                            }
+                        }
+                    }
+                }     
+            };
+
         }
         function listpresets() {    
             var xhttpP = new XMLHttpRequest();
