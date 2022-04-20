@@ -14,6 +14,9 @@
             height: 98vh;
             overflow: hidden;
         }
+        body a {
+            color: white;
+        }
         #panel2panel1 {
             display: flex;
             gap: 2%;
@@ -101,6 +104,21 @@
             display: none;
         }
         #playqueue {
+            display: none;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            /*align-items: flex-start;*/
+            gap: 1vh;
+            width: 100%;
+            height: 100%;
+            font-size: 2vh;
+            overflow:scroll;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+            scrollbar-width: none;  /* Hide scrollbar for Firefox */
+        }
+        #browse {
             display: none;
             flex-direction: column;
             flex-wrap: nowrap;
@@ -294,6 +312,7 @@
                         <div id="actions">
                         </div>
                         <button onclick="loadPanel1View('playlist')" id="togglesonghistory">History</button>
+                        <button onclick="showBrowseContent()" id="showbrowsecontent">Browse</button>
                         <button onclick="control(receiverOnUrl)" id="receiverON">ON</button>
                         <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
                         <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
@@ -305,6 +324,7 @@
                     </div>
                     <div id="playlist"></div>
                     <div id="playqueue"></div>
+                    <div id="browse"></div>
                 </div>
                 <div onclick="toggleControls()" id="panel2">
                     <div id="panel2flex">
@@ -333,6 +353,7 @@
         var receiverVolumeDownUrl = 'http://192.168.2.79:8000/api/MVDOWN';
         //stop editing here unless you know what your are doing :)
         var url = 'http://' + ipAddress + ':' + port;
+        var previousBrowse = '';
         if (receiverVolumeUpUrl != '' && receiverVolumeUpUrl != '') {
             var VolumeUpUrl = receiverVolumeUpUrl;
             var VolumeDownUrl = receiverVolumeDownUrl;
@@ -340,6 +361,22 @@
             var VolumeUpUrl = '/Volume?db=1&tell_slaves=off';
             var VolumeDownUrl = '/Volume?db=-1&tell_slaves=off';
         }
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('ipaddress') != null) {
+            ipAddress = urlParams.get('ipaddress');
+        }
+        var update = 1;
+        var call = 1;
+        var eTag = "";
+        let playHistory = [];
+        let browseBreadCrumbs = ["loadPanel1View('controls')"];
+        longPoll();
+        //controls
+        const albumCover = document.getElementById('albumcover');
+        const controls = document.getElementById('controls');
+        const playList = document.getElementById('playlist');
+        const playQueue = document.getElementById('playqueue');
+        const browse = document.getElementById('browse');
         function longPoll() {    
             var xhttp = new XMLHttpRequest();
             console.log("Api call " + call);
@@ -359,6 +396,7 @@
                         clearTimeout(tryAgain);
                         var xmlDoc = xhttp.responseXML;
                         eTag = xmlDoc.getElementsByTagName('status')[0].getAttribute('etag');
+                       //if (xmlDoc.getElementsByTagName('state')[0] != 'stop') { //beginning of if state is not stop
                         var quality;
                         let song = {
                             "time": new Date(),
@@ -545,6 +583,7 @@
                         }
                         //debug
                         console.log(song);
+                       //}//end if state is not stop
                         console.log(xmlDoc);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
@@ -560,6 +599,10 @@
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'stream') {
                                 document.getElementById("togglePause").innerHTML = "Pause";
                                 document.getElementById("togglePause").style.display = 'inline-block';
+                                document.getElementById("back").style.display = 'none';
+                                document.getElementById("skip").style.display = 'none';
+                            } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'stop') {
+                                document.getElementById("togglePause").style.display = 'none';
                                 document.getElementById("back").style.display = 'none';
                                 document.getElementById("skip").style.display = 'none';
                             } else {
@@ -595,20 +638,6 @@
             };
             call = call + 1;
         }
-        const urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.get('ipaddress') != null) {
-            ipAddress = urlParams.get('ipaddress');
-        }
-        var update = 1;
-        var call = 1;
-        var eTag = "";
-        let playHistory = [];
-        longPoll();
-        //controls
-        const albumCover = document.getElementById('albumcover');
-        const controls = document.getElementById('controls');
-        const playList = document.getElementById('playlist');
-        const playQueue = document.getElementById('playqueue');
         function toggleControls () {
             if (albumCover.style.display === 'none') {
                 loadPanel1View ('albumcover');   
@@ -620,11 +649,16 @@
             getPlayQueue();
             loadPanel1View ('playqueue');
         }
+        function showBrowseContent () {
+            browseContent();
+            loadPanel1View ('browse');
+        }
         function loadPanel1View (view) {
             controls.style.display = 'none';
             playQueue.style.display = 'none';
             albumCover.style.display = 'none';
             playList.style.display = 'none';
+            browse.style.display = 'none';
             switch (view) {
                 case 'controls':
                     controls.style.display = 'flex';
@@ -634,6 +668,9 @@
                     break;
                 case 'playlist':
                     playList.style.display = 'flex';
+                    break;
+                case 'browse':
+                    browse.style.display = 'flex';
                     break;    
                 default:
                     albumCover.style.display = 'block';
@@ -669,7 +706,7 @@
             } else {
                 songHtml += '<div class="playlistsongservice">'+ service + ' ' + quality + ' ';
             }
-            songHtml += "<span onclick=\"removeFromQueue(" + id + ")\" class=\"removefromqueue\">&CircleTimes;</span>";
+            songHtml += "<a  href=\"#\" onclick=\"removeFromQueue(" + id + ")\" class=\"removefromqueue\">&CircleTimes;</a>";
             songHtml += '</div>';
             songHtml += '</div>'; 
             songHtml += '</div>'; 
@@ -748,6 +785,117 @@
                     }
                 }     
             };
+        }
+        function browseContent(key,query) {    
+            var xhttpB = new XMLHttpRequest();
+            var browseLink = '';
+            if (!key) {
+                browseLink = '/Browse';
+            } else if (key.startsWith('/')) {
+                browseLink = key;
+            } else {
+                browseLink = '/Browse?key=' + key;
+            }
+            if (query) {
+                browseLink += '&q=' + query;
+            }
+            previousBrowse = "browseContent('" + browseLink + "')";
+            var browseBackLink = '';
+            if (browseBreadCrumbs.includes(previousBrowse)) {
+                browseBackLink = browseBreadCrumbs[browseBreadCrumbs.indexOf(previousBrowse) - 1];
+            } else {
+                browseBackLink = browseBreadCrumbs[browseBreadCrumbs.length - 1];
+            }
+            var browseHtml = '<button onclick="' + browseBackLink + '">Back</button>';
+            browseBreadCrumbs.push(previousBrowse);  
+            xhttpB.open("GET", url + browseLink, true);
+            xhttpB.send();
+            xhttpB.onreadystatechange = function() {
+                if (xhttpB.readyState == 4) {
+                    if(xhttpB.status == 200) {
+                        var xmlDocB = xhttpB.responseXML;
+                        if (typeof xmlDocB.getElementsByTagName("*")[0].getAttribute('service') != "undefined" && xmlDocB.getElementsByTagName("*")[0].getAttribute('service') != null) {
+                            var browseService = xmlDocB.getElementsByTagName("*")[0].getAttribute('service');
+                            browseHtml += '<h1>' + browseService + '</h1>';
+                        } else {
+                            var browseService = '';
+                        }
+                        if (typeof xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') != "undefined" && xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') != null) {
+                            browseHtml += '<form><input type="text" id="searchquery" name="searchquery"><input type="button" value="Search" onclick="search(\'' + xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') + '\')"></form>';
+                        }
+                        if (typeof xmlDocB.getElementsByTagName("item")[0] != "undefined") {  
+                            for (i=0; i < xmlDocB.getElementsByTagName("item").length; i++) {
+                                if (xmlDocB.getElementsByTagName("item")[i].getAttribute('browseKey')) {
+                                    browseHtml += '<a href="#" onclick="browseContent(\'' + xmlDocB.getElementsByTagName("item")[i].getAttribute('browseKey') + '\')">' + xmlDocB.getElementsByTagName("item")[i].getAttribute('text') + '</a>';
+                                } else if (xmlDocB.getElementsByTagName("item")[i].getAttribute('playURL')) {
+                                    browseHtml += '<a href="#" onclick="browseContent(\'' + xmlDocB.getElementsByTagName("item")[i].getAttribute('playURL') + '\')">' + xmlDocB.getElementsByTagName("item")[i].getAttribute('text') + '</a>';
+                                } else if (xmlDocB.getElementsByTagName("item")[i].getAttribute('URL')) {
+                                    var streamUrl = xmlDocB.getElementsByTagName("item")[i].getAttribute('URL');
+                                    browseHtml += '<a href="#" onclick="control(\'/Play?url=' + streamUrl + '\')">' + xmlDocB.getElementsByTagName("item")[i].getAttribute('text') + '</a>';
+                                }
+                            }     
+                        }
+                        if (typeof xmlDocB.getElementsByTagName("album")[0] != "undefined") {
+                            browseHtml += '<h2>Albums</h2>';
+                            for (i=0; i < xmlDocB.getElementsByTagName("album").length; i++) {
+                                var browseHtml2 = '';
+                                browseHtml += '<a href="#" ';
+                                if (xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid') && browseService) {
+                                    browseHtml += 'onclick="browseContent(\'/Songs?albumid=';
+                                    browseHtml += xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid');
+                                    browseHtml += '&service=' + browseService;
+                                    browseHtml += '\')" ';
+                                    browseHtml2 = '<a href="#" onclick="control(\'/Add?albumid=' + xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid') + '&service=' + browseService + '&playnow=1\')">(play)</a>';
+                                }
+                                browseHtml += '>';
+                                if (typeof xmlDocB.getElementsByTagName("album")[i].getElementsByTagName('title')[0] != "undefined") {
+                                    browseHtml += xmlDocB.getElementsByTagName("album")[i].getElementsByTagName('title')[0].innerHTML;
+                                }
+                                if (typeof xmlDocB.getElementsByTagName("album")[i].getElementsByTagName('art')[0] != "undefined") {
+                                    browseHtml += ' - ' + xmlDocB.getElementsByTagName("album")[i].getElementsByTagName('art')[0].innerHTML;
+                                }
+                                browseHtml += '</a>';
+                                if (browseHtml2) {
+                                    browseHtml += ' ' + browseHtml2;
+                                }
+                            }     
+                        }
+                        if (typeof xmlDocB.getElementsByTagName("song")[0] != "undefined") {
+                            browseHtml += '<h2>Songs</h2>';
+                            for (i=0; i < xmlDocB.getElementsByTagName("song").length; i++) {
+                                browseHtml += '<a href="#" onclick="control(\'/Add?id=' + xmlDocB.getElementsByTagName("song")[i].getAttribute('songid') + '&playnow=1\')">' + xmlDocB.getElementsByTagName("song")[i].getElementsByTagName("title")[0].innerHTML + '</a>';
+                            }
+                        }
+                        if (typeof xmlDocB.getElementsByTagName("name")[0] != "undefined") {
+                            browseHtml += '<h2>Playlists</h2>';
+                            for (i=0; i < xmlDocB.getElementsByTagName("name").length; i++) {
+                                var playListLink = '';
+                                if (xmlDocB.getElementsByTagName("name")[i].getAttribute('preset_url')) {
+                                    playListLink = xmlDocB.getElementsByTagName("name")[i].getAttribute('preset_url');
+                                } else if (xmlDocB.getElementsByTagName("name")[i].getAttribute('id') && browseService) {
+                                    playListLink = '/Load?id=' + xmlDocB.getElementsByTagName("name")[i].getAttribute('id') + '&service=' + browseService;
+                                }
+                                
+                                browseHtml += '<a href="#" onclick="control(\'' + playListLink + '\')">' + xmlDocB.getElementsByTagName("name")[i].innerHTML + '</a>';
+                            }
+                        }
+                        if (typeof xmlDocB.getElementsByTagName("art")[0] != "undefined") {
+                            browseHtml += '<h2>Artists</h2>';
+                            for (i=0; i < xmlDocB.getElementsByTagName("art").length; i++) {
+                                browseHtml += '<a href="#" onclick="browseContent(\'/Albums?artistid=' + xmlDocB.getElementsByTagName("art")[i].getAttribute("artistid") + '&service=' + browseService +'\')">' + xmlDocB.getElementsByTagName("art")[i].innerHTML + '</a>';
+                            }
+                        }
+                        browse.innerHTML = browseHtml;
+                    }
+                }     
+            };
+        }
+        function search (searchKey) {
+            if (document.getElementById("searchquery").value) {
+                browseContent(searchKey,document.getElementById("searchquery").value);
+            } else {
+                console.log('searchkey:' + searchKey + ' searchquery:' + document.getElementById("searchquery").value);
+            }
         }
         </script> 
 </body>
