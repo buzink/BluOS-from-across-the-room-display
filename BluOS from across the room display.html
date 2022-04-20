@@ -354,6 +354,7 @@
         //stop editing here unless you know what your are doing :)
         var url = 'http://' + ipAddress + ':' + port;
         var previousBrowse = '';
+        var searchQuery = '';
         if (receiverVolumeUpUrl != '' && receiverVolumeUpUrl != '') {
             var VolumeUpUrl = receiverVolumeUpUrl;
             var VolumeDownUrl = receiverVolumeDownUrl;
@@ -798,6 +799,9 @@
             }
             if (query) {
                 browseLink += '&q=' + query;
+                searchQuery = ' value="' + query + '" ';
+            } else {
+                searchQuery =  ' value="" ';
             }
             previousBrowse = "browseContent('" + browseLink + "')";
             var browseBackLink = '';
@@ -821,7 +825,7 @@
                             var browseService = '';
                         }
                         if (typeof xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') != "undefined" && xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') != null) {
-                            browseHtml += '<form><input type="text" id="searchquery" name="searchquery"><input type="button" value="Search" onclick="search(\'' + xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') + '\')"></form>';
+                            browseHtml += '<form action="javascript:void(0);" ><input' + searchQuery + 'type="text" id="searchquery" name="searchquery"><input id="searchbutton" type="submit" value="Search" onclick="search(\'' + xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') + '\')"><input type="hidden" id="searchkey" name="searchkey" value="' + xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') + '"></form>';
                         }
                         if (typeof xmlDocB.getElementsByTagName("item")[0] != "undefined") {  
                             for (i=0; i < xmlDocB.getElementsByTagName("item").length; i++) {
