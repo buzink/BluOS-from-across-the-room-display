@@ -882,10 +882,11 @@
             if (query) {
                 browseLink += '&q=' + query;
                 searchQuery = ' value="' + query + '" ';
+                previousBrowse = "browseContent('" + key + "','" + query +  "')";
             } else {
                 searchQuery = ' value="" ';
+                previousBrowse = "browseContent('" + browseLink + "')";
             }
-            previousBrowse = "browseContent('" + browseLink + "')";
             var browseBackLink = '';
             if (browseBreadCrumbs.includes(previousBrowse)) {
                 browseBackLink = browseBreadCrumbs[browseBreadCrumbs.indexOf(previousBrowse) - 1];
