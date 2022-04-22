@@ -1080,14 +1080,17 @@
                                 var action2 = '';
                                 var action3 = '';
                                 if (xmlDocB.getElementsByTagName("item")[i].getAttribute('browseKey')) {
-
                                     action0 = 'browseContent(\'' + xmlDocB.getElementsByTagName("item")[i].getAttribute('browseKey') + '\')';
                                 } else if (xmlDocB.getElementsByTagName("item")[i].getAttribute('playURL')) {
-
                                     action0 = 'browseContent(\'' + xmlDocB.getElementsByTagName("item")[i].getAttribute('playURL') + '\')';
                                 } else if (xmlDocB.getElementsByTagName("item")[i].getAttribute('URL')) {
-
-                                    action0 = 'control(\'/Play?url=' + xmlDocB.getElementsByTagName("item")[i].getAttribute('URL') + '\')';
+                                    if (xmlDocB.getElementsByTagName("item")[i].getAttribute('type') == 'audio') {
+                                        action0 = 'control(\'/Play?url=' + xmlDocB.getElementsByTagName("item")[i].getAttribute('URL') + '\')';
+                                    } else if (xmlDocB.getElementsByTagName("item")[i].getAttribute('type') == 'link') {
+                                        action0 = 'browseContent(\'/RadioBrowse?service=' + browseService + '&url=' + xmlDocB.getElementsByTagName("item")[i].getAttribute('URL') + '\')';
+                                    } else {
+                                        //what is the default for item URLs?
+                                    }
                                 }
                                 if (typeof xmlDocB.getElementsByTagName("item")[i].getAttribute('image') != 'undefined') {
                                     imageUrl = xmlDocB.getElementsByTagName("item")[i].getAttribute('image');
