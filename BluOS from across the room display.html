@@ -834,9 +834,11 @@
             var level4 = '';
             var imageUrl = albumCover;
             var iconUrl = '';
+            var action0 = '';
             var action1 = '';
-            var action2 = '';
             var id = fn || ' ';
+            var action2 = '';
+            var action3 = '';
             if (typeof serviceicon != 'undefined' && serviceicon != '') {
                 iconUrl = serviceicon;
                 level4 = station + ' ' + quality;
@@ -844,9 +846,9 @@
                 level4 = service + ' ' + station + ' ' + quality;
             }
             if (fn) {
-                action1 = "control('/Add?id=" + fn + "&playnow=1')";
+                action0 = "control('/Add?id=" + fn + "&playnow=1')";
             }
-            playList.innerHTML = buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id) + playList.innerHTML;
+            playList.innerHTML = buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3) + playList.innerHTML;
         }
         function addSongToQueue(songTitle, songArtist, songAlbum, albumCover, service, quality, songid, id) {
             var level1 = songTitle;
@@ -855,9 +857,11 @@
             var level4 = '';
             var imageUrl = url + '/Artwork?service=' + service + '&songid=' + songid;
             var iconUrl = '';
+            var action0 = '';
             var action1 = '';
-            var action2 = '';
             var id = id || '';
+            var action2 = '';
+            var action3 = '';
             if (typeof serviceicon != 'undefined' && serviceicon != '') {
                 iconUrl = serviceicon;
                 level4 = quality;
@@ -866,12 +870,12 @@
             }
             action1 = "control('/Play?id=" + id + "')";
             action2 = "removeFromQueue(" + id + ")";
-            playQueue.innerHTML += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
+            playQueue.innerHTML += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3);
         }
-        function buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id) {
+        function buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3) {
             id = id || ' ';
-            if (action1 && !action2) {
-                var songHtml = '<div id="' + id + '" onclick="' + action1 + '" class="playlistsong">';
+            if (action0 && !action1 && !action2 && !action3) {
+                var songHtml = '<div id="' + id + '" onclick="' + action0 + '" class="playlistsong">';
             } else {
                 var songHtml = '<div id="' + id + '" class="playlistsong">';
             }
@@ -886,8 +890,8 @@
                 }
             }
             if (imageUrl || action1Text) {
-                if (action1 && action2) {
-                    songHtml += '<div onclick="' + action1 + '" class="playlistalbumcover">';
+                if (action0 && (action1 || action2 || action3)) {
+                    songHtml += '<div onclick="' + action0 + '" class="playlistalbumcover">';
                 } else {
                     songHtml += '<div class="playlistalbumcover">';
                 }
@@ -899,19 +903,31 @@
                 }
                 songHtml += '</div>';
             }
-            if (action1 && action2) {
-                songHtml += '<div onclick="' + action2 + '" class="playlistsongmeta">';
+            if (action1 && !action2 && !action3) {
+                songHtml += '<div onclick="' + action1 + '" class="playlistsongmeta">';
             } else {
                 songHtml += '<div class="playlistsongmeta">';
             }
             if (level1) {
-                songHtml += '<div class="playlistsongtitle">' + level1 + '</div>';
+                if (action1) {
+                    songHtml += '<div onclick="' + action1 + '" class="playlistsongtitle">' + level1 + '</div>';
+                } else {
+                    songHtml += '<div class="playlistsongtitle">' + level1 + '</div>';
+                }
             }
             if (level2) {
-                songHtml += '<div class="playlistsongartist">' + level2 + '</div>';
+                if (action2) {
+                    songHtml += '<div onclick="' + action2 + '" class="playlistsongartist">' + level2 + '</div>';
+                } else {
+                    songHtml += '<div class="playlistsongartist">' + level2 + '</div>';
+                }
             }
             if (level3) {
-                songHtml += '<div class="playlistsongalbum">' + level3 + '</div>';
+                if (action3) {
+                    songHtml += '<div onclick="' + action3 + '" class="playlistsongalbum">' + level3 + '</div>';
+                } else {
+                    songHtml += '<div class="playlistsongalbum">' + level3 + '</div>';
+                }
             }
             if (iconUrl || level4) {
                 songHtml += '<div class="playlistsongservice">';
@@ -1053,30 +1069,31 @@
                         }
                         if ((typeof xmlDocB.getElementsByTagName("browse")[0] != "undefined" || typeof xmlDocB.getElementsByTagName("radiotime")[0] != "undefined") && typeof xmlDocB.getElementsByTagName("item")[0] != "undefined") {
                             for (i = 0; i < xmlDocB.getElementsByTagName("item").length; i++) {
-                                var level1 = '';
+                                var level1 = level1 = xmlDocB.getElementsByTagName("item")[i].getAttribute('text');
                                 var level2 = '';
                                 var level3 = '';
                                 var level4 = '';
                                 var imageUrl = '';
                                 var iconUrl = '';
+                                var action0 = '';
                                 var action1 = '';
-                                var action2 = '';
                                 var id = '';
-                                var level1 = xmlDocB.getElementsByTagName("item")[i].getAttribute('text');
+                                var action2 = '';
+                                var action3 = '';
                                 if (xmlDocB.getElementsByTagName("item")[i].getAttribute('browseKey')) {
 
-                                    action1 = 'browseContent(\'' + xmlDocB.getElementsByTagName("item")[i].getAttribute('browseKey') + '\')';
+                                    action0 = 'browseContent(\'' + xmlDocB.getElementsByTagName("item")[i].getAttribute('browseKey') + '\')';
                                 } else if (xmlDocB.getElementsByTagName("item")[i].getAttribute('playURL')) {
 
-                                    action1 = 'browseContent(\'' + xmlDocB.getElementsByTagName("item")[i].getAttribute('playURL') + '\')';
+                                    action0 = 'browseContent(\'' + xmlDocB.getElementsByTagName("item")[i].getAttribute('playURL') + '\')';
                                 } else if (xmlDocB.getElementsByTagName("item")[i].getAttribute('URL')) {
 
-                                    action1 = 'control(\'/Play?url=' + xmlDocB.getElementsByTagName("item")[i].getAttribute('URL') + '\')';
+                                    action0 = 'control(\'/Play?url=' + xmlDocB.getElementsByTagName("item")[i].getAttribute('URL') + '\')';
                                 }
                                 if (typeof xmlDocB.getElementsByTagName("item")[i].getAttribute('image') != 'undefined') {
                                     imageUrl = xmlDocB.getElementsByTagName("item")[i].getAttribute('image');
                                 }
-                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
+                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3);
                             }
                         }
                         if (typeof xmlDocB.getElementsByTagName("albums")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("album")[0] != "undefined") {
@@ -1089,13 +1106,15 @@
                                 var level4 = '';
                                 var imageUrl = '';
                                 var iconUrl = '';
+                                var action0 = '';
                                 var action1 = '';
-                                var action2 = '';
                                 var id = '';
+                                var action2 = '';
+                                var action3 = '';
                                 browseHtml += '<a href="#" ';
                                 if (xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid') && browseService) {
-                                    action1 = "control('/Add?albumid=" + xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid') + "&service=" + browseService + "&playnow=1')";
-                                    action2 = "browseContent('/Songs?albumid=" + xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid') + "&service=" + browseService + "')";
+                                    action0 = "control('/Add?albumid=" + xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid') + "&service=" + browseService + "&playnow=1')";
+                                    action1 = "browseContent('/Songs?albumid=" + xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid') + "&service=" + browseService + "')";
                                     imageUrl = '/Artwork?service=' + browseService + '&albumid=' + xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid');
                                     id = xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid');
                                 }
@@ -1111,7 +1130,7 @@
                                 if (typeof xmlDocB.getElementsByTagName("album")[i].getAttribute('quality') != 'undefined') {
                                     level4 = xmlDocB.getElementsByTagName("album")[i].getAttribute('quality').toUpperCase();
                                 }
-                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
+                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3);
                             }
                         }
                         if (typeof xmlDocB.getElementsByTagName("songs")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("song")[0] != "undefined") {
@@ -1124,12 +1143,14 @@
                                 var level4 = '';
                                 var imageUrl = '';
                                 var iconUrl = '';
+                                var action0 = '';
                                 var action1 = '';
-                                var action2 = '';
                                 var id = '';
+                                var action2 = '';
+                                var action3 = '';
                                 if (xmlDocB.getElementsByTagName("song")[i].getAttribute('songid')) {
                                     id = xmlDocB.getElementsByTagName("song")[i].getAttribute('songid');
-                                    action1 = "control('/Add?id=" + xmlDocB.getElementsByTagName("song")[i].getAttribute('songid') + "&playnow=1')";
+                                    action0 = "control('/Add?id=" + xmlDocB.getElementsByTagName("song")[i].getAttribute('songid') + "&playnow=1')";
                                     imageUrl = '/Artwork?service=' + browseService + '&songid=' + xmlDocB.getElementsByTagName("song")[i].getAttribute('songid');
                                 }
                                 if (typeof xmlDocB.getElementsByTagName("song")[i].getElementsByTagName("title")[0] != 'undefined') {
@@ -1144,7 +1165,7 @@
                                 if (typeof xmlDocB.getElementsByTagName("song")[i].getElementsByTagName("quality")[0] != 'undefined') {
                                     level4 = xmlDocB.getElementsByTagName("song")[i].getElementsByTagName("quality")[0].innerHTML.toUpperCase();
                                 }
-                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
+                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3);
                             }
                         }
                         if (typeof xmlDocB.getElementsByTagName("playlists")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("name")[0] != "undefined") {
@@ -1157,16 +1178,18 @@
                                 var level4 = '';
                                 var imageUrl = '';
                                 var iconUrl = '';
+                                var action0 = '';
                                 var action1 = '';
-                                var action2 = '';
                                 var id = '';
+                                var action2 = '';
+                                var action3 = '';
                                 var playListLink = '';
                                 if (xmlDocB.getElementsByTagName("name")[i].getAttribute('preset_url')) {
-                                    action1 = "control('" + xmlDocB.getElementsByTagName("name")[i].getAttribute('preset_url') + "')";
+                                    action0 = "control('" + xmlDocB.getElementsByTagName("name")[i].getAttribute('preset_url') + "')";
                                 }
                                 if (xmlDocB.getElementsByTagName("name")[i].getAttribute('id') && browseService) {
-                                    action1 = "control('" + '/Load?id=' + xmlDocB.getElementsByTagName("name")[i].getAttribute('id') + '&service=' + browseService + "')";
-                                    action2 = "browseContent('" + '/Songs?playlistid=' + xmlDocB.getElementsByTagName("name")[i].getAttribute('id') + '&service=' + browseService + "')";
+                                    action0 = "control('" + '/Load?id=' + xmlDocB.getElementsByTagName("name")[i].getAttribute('id') + '&service=' + browseService + "')";
+                                    action1 = "browseContent('" + '/Songs?playlistid=' + xmlDocB.getElementsByTagName("name")[i].getAttribute('id') + '&service=' + browseService + "')";
                                 }
                                 if (xmlDocB.getElementsByTagName("name")[i].getAttribute('tracks')) {
                                     level4 = xmlDocB.getElementsByTagName("name")[i].getAttribute('tracks') + ' tracks';
@@ -1175,7 +1198,7 @@
                                     level2 = xmlDocB.getElementsByTagName("name")[i].getAttribute('description');
                                 }
                                 imageUrl = 'play';
-                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
+                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3);
                             }
                         }
                         if (typeof xmlDocB.getElementsByTagName("artists")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("art")[0] != "undefined") {
@@ -1188,19 +1211,21 @@
                                 var level4 = '';
                                 var imageUrl = '';
                                 var iconUrl = '';
+                                var action0 = '';
                                 var action1 = '';
-                                var action2 = '';
                                 var id = xmlDocB.getElementsByTagName("art")[i].getAttribute("artistid") || '';
+                                var action2 = '';
+                                var action3 = '';
                                 if (typeof xmlDocB.getElementsByTagName("art")[i].innerHTML != 'undefined') {
                                     level1 = xmlDocB.getElementsByTagName("art")[i].innerHTML;
                                 }
                                 if (id) {
-                                    action1 = 'browseContent(\'/Albums?artistid=' + xmlDocB.getElementsByTagName("art")[i].getAttribute("artistid") + '&service=' + browseService + '\')';
+                                    action0 = 'browseContent(\'/Albums?artistid=' + xmlDocB.getElementsByTagName("art")[i].getAttribute("artistid") + '&service=' + browseService + '\')';
                                 }
                                 if (typeof xmlDocB.getElementsByTagName("art")[i].getAttribute('image') != 'undefined') {
                                     imageUrl = xmlDocB.getElementsByTagName("art")[i].getAttribute('image');
                                 }
-                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
+                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3);
                                 //browseHtml += '<a href="#" onclick="browseContent(\'/Albums?artistid=' + xmlDocB.getElementsByTagName("art")[i].getAttribute("artistid") + '&service=' + browseService + '\')">' + xmlDocB.getElementsByTagName("art")[i].innerHTML + '</a>';
                             }
                         }
