@@ -164,6 +164,11 @@
         /* Hide scrollbar for Firefox */
     }
 
+    #browse iframe {
+        height: 100%;
+        border: none;
+    }
+
     #playlist {
         display: none;
         flex-direction: column;
@@ -396,6 +401,7 @@
                 <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
                 <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
                 <button onclick="showPlayQueue()">Queue</button>
+                <button onclick="browseUrl('http://' + ipAddress)">Settings</button>
                 <button onclick="location.reload()">Reload</button>
                 <div id="presets">
                 </div>
@@ -459,7 +465,6 @@
         // TODO in longPolll:
         // show current and total track time
         // make artist and album clickable?
-        // add player webview button in controls + iframe in browse
         function longPoll() {
             var xhttp = new XMLHttpRequest();
             //console.log("Api call " + call);
@@ -792,6 +797,10 @@
         }
         function showBrowseContent() {
             browseContent();
+            loadPanel1View('browse');
+        }
+        function browseUrl(externalUrl) {
+            browse.innerHTML = '<iframe src="' + externalUrl + '">';
             loadPanel1View('browse');
         }
         function loadPanel1View(view) {
