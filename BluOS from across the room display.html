@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <script src="https://kit.fontawesome.com/83f0bb522b.js" crossorigin="anonymous"></script>
 </head>
 <style>
     body {
@@ -180,23 +179,40 @@
 
     .playlistsong {
         height: 10vh;
+        width: 100%;
         display: flex;
+        flex-wrap: nowrap;
+        /*overflow: hidden;*/
         font-size: 3vh;
         gap: 1vh;
-        width: 100%;
         margin-bottom: 1vh;
     }
 
     .playlistalbumcover {
-        height: 10vh;
+        height: 9vh;
         width: 10vh;
         margin-right: 1vh;
+        overflow: hidden;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-items: center;
+    }
+
+    .playlistalbumcover span {
+        margin: 0 auto 0 auto;
+    }
+
+    .playlistalbumcover img {
+        height: 9h;
+        width: 9vh;
         overflow: hidden;
         display: block;
     }
 
     .playlistsongmeta {
         height: 10vh;
+        width: 90%;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -436,6 +452,10 @@
         const playList = document.getElementById('playlist');
         const playQueue = document.getElementById('playqueue');
         const browse = document.getElementById('browse');
+        // TODO in longPolll:
+        // show current and total track time
+        // make artist and album clickable?
+        // add player webview button in controls + iframe in browse
         function longPoll() {
             var xhttp = new XMLHttpRequest();
             //console.log("Api call " + call);
@@ -855,8 +875,7 @@
             playQueue.innerHTML = buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id) + playQueue.innerHTML;
         }
         function buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id) {
-            var imageClass = 'playlistalbumcover';
-            var imageContainer = 'a'; 
+            id = id || ' ';
             if (action1 && !action2) {
                 var songHtml = '<div id="' + id + '" onclick="' + action1 + '" class="playlistsong">';
             } else {
@@ -867,19 +886,24 @@
                     imageUrl = imageUrl;
                 } else if (imageUrl.startsWith('/')) {
                     imageUrl = url + imageUrl;
-                } else if (imageUrl.startsWith('fa')) { //<i class="fa-solid fa-play"></i>
-                    imageClass += ' ' + imageUrl;
+                } else {
+                    var action1Text = imageUrl;
                     imageUrl = '';
-                    imageContainer = "i";
                 }
             }
-            if ((action1 && action2) || imageUrl) {
-                    imageUrl = imageUrl || ' ';
-                    if (action1 && action2) {
-                        songHtml += '<img onclick="' + action1 + '" class="' + imageClass + '" src="' + imageUrl + '">';
-                    } else {
-                        songHtml += '<img class="' + imageClass + '" src="' + imageUrl + '">';
-                    }
+            if (imageUrl || action1Text) {
+                if (action1 && action2) {
+                    songHtml += '<div onclick="' + action1 + '" class="playlistalbumcover">';
+                } else {
+                    songHtml += '<div class="playlistalbumcover">';
+                }
+                if (imageUrl) {
+                    songHtml += '<img src="' + imageUrl + '">';
+                }
+                if (action1Text) {
+                    songHtml += '<span class="action1text">' + action1Text + '</span>';
+                }
+                songHtml += '</div>';
             }
             if (action1 && action2) {
                 songHtml += '<div onclick="' + action2 + '" class="playlistsongmeta">';
@@ -925,6 +949,8 @@
                 }
             };
         }
+        // TODO in Play Queue:
+        // focus on active song
         function getPlayQueue() {
             var xhttpQ = new XMLHttpRequest();
             xhttpQ.open("GET", url + '/Playlist', true);
@@ -983,6 +1009,11 @@
                 }
             };
         }
+        // TODO in content browsing: 
+        // fix non playable TuneIn playlists
+        // display categories (iterate through xml instead of extracting tags)
+        // make artists and albums clickable everywhere
+        // finetune styling
         function browseContent(key, query) {
             var xhttpB = new XMLHttpRequest();
             var browseLink = '';
@@ -1024,7 +1055,10 @@
                         if (typeof xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') != "undefined" && xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') != null) {
                             browseHtml += '<form action="javascript:void(0);" ><input' + searchQuery + 'type="text" id="searchquery" name="searchquery"><input id="searchbutton" type="submit" value="Search" onclick="search(\'' + xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') + '\')"><input type="hidden" id="searchkey" name="searchkey" value="' + xmlDocB.getElementsByTagName("*")[0].getAttribute('searchKey') + '"></form>';
                         }
-                        if (typeof xmlDocB.getElementsByTagName("item")[0] != "undefined") {
+                        if (typeof xmlDocB.getElementsByTagName("category")[0] != "undefined") {
+                            //iterate through categories or iterate through alle main level tags one level higher? 
+                        }
+                        if ((typeof xmlDocB.getElementsByTagName("browse")[0] != "undefined" || typeof xmlDocB.getElementsByTagName("radiotime")[0] != "undefined") && typeof xmlDocB.getElementsByTagName("item")[0] != "undefined") {
                             for (i = 0; i < xmlDocB.getElementsByTagName("item").length; i++) {
                                 var level1 = '';
                                 var level2 = '';
@@ -1052,7 +1086,7 @@
                                 browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
                             }
                         }
-                        if (typeof xmlDocB.getElementsByTagName("album")[0] != "undefined") {
+                        if (typeof xmlDocB.getElementsByTagName("albums")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("album")[0] != "undefined") {
                             browseHtml += '<h2>Albums</h2>';
                             for (i = 0; i < xmlDocB.getElementsByTagName("album").length; i++) {
                                 var browseHtml2 = '';
@@ -1087,7 +1121,7 @@
                                 browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
                             }
                         }
-                        if (typeof xmlDocB.getElementsByTagName("song")[0] != "undefined") {
+                        if (typeof xmlDocB.getElementsByTagName("songs")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("song")[0] != "undefined") {
                             browseHtml += '<h2>Songs</h2>';
                             for (i = 0; i < xmlDocB.getElementsByTagName("song").length; i++) {
                                 var browseHtml2 = '';
@@ -1120,7 +1154,7 @@
                                 browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
                             }
                         }
-                        if (typeof xmlDocB.getElementsByTagName("name")[0] != "undefined") {
+                        if (typeof xmlDocB.getElementsByTagName("playlists")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("name")[0] != "undefined") {
                             browseHtml += '<h2>Playlists</h2>';
                             for (i = 0; i < xmlDocB.getElementsByTagName("name").length; i++) {
                                 var browseHtml2 = '';
@@ -1142,20 +1176,39 @@
                                     action2 = "browseContent('" + '/Songs?playlistid=' + xmlDocB.getElementsByTagName("name")[i].getAttribute('id') + '&service=' + browseService + "')";
                                 }
                                 if (xmlDocB.getElementsByTagName("name")[i].getAttribute('tracks')) {
-                                    level4  = xmlDocB.getElementsByTagName("name")[i].getAttribute('tracks') + ' tracks';
+                                    level4 = xmlDocB.getElementsByTagName("name")[i].getAttribute('tracks') + ' tracks';
                                 }
                                 if (xmlDocB.getElementsByTagName("name")[i].getAttribute('description')) {
-                                    level2  = xmlDocB.getElementsByTagName("name")[i].getAttribute('description');
+                                    level2 = xmlDocB.getElementsByTagName("name")[i].getAttribute('description');
                                 }
-                                //todo find default icon https://icons.getbootstrap.com/icons/collection-play/
-                                imageUrl = 'fa-solid fa-play'; //<i class="fa-light fa-play"></i>
+                                imageUrl = 'play';
                                 browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
                             }
                         }
-                        if (typeof xmlDocB.getElementsByTagName("art")[0] != "undefined") {
+                        if (typeof xmlDocB.getElementsByTagName("artists")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("art")[0] != "undefined") {
                             browseHtml += '<h2>Artists</h2>';
                             for (i = 0; i < xmlDocB.getElementsByTagName("art").length; i++) {
-                                browseHtml += '<a href="#" onclick="browseContent(\'/Albums?artistid=' + xmlDocB.getElementsByTagName("art")[i].getAttribute("artistid") + '&service=' + browseService + '\')">' + xmlDocB.getElementsByTagName("art")[i].innerHTML + '</a>';
+                                var browseHtml2 = '';
+                                var level1 = '';
+                                var level2 = '';
+                                var level3 = '';
+                                var level4 = '';
+                                var imageUrl = '';
+                                var iconUrl = '';
+                                var action1 = '';
+                                var action2 = '';
+                                var id = xmlDocB.getElementsByTagName("art")[i].getAttribute("artistid") || '';
+                                if (typeof xmlDocB.getElementsByTagName("art")[i].innerHTML != 'undefined') {
+                                    level1 = xmlDocB.getElementsByTagName("art")[i].innerHTML;
+                                }
+                                if (id) {
+                                    action1 = 'browseContent(\'/Albums?artistid=' + xmlDocB.getElementsByTagName("art")[i].getAttribute("artistid") + '&service=' + browseService + '\')';
+                                }
+                                if (typeof xmlDocB.getElementsByTagName("art")[i].getAttribute('image') != 'undefined') {
+                                    imageUrl = xmlDocB.getElementsByTagName("art")[i].getAttribute('image');
+                                }
+                                browseHtml += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
+                                //browseHtml += '<a href="#" onclick="browseContent(\'/Albums?artistid=' + xmlDocB.getElementsByTagName("art")[i].getAttribute("artistid") + '&service=' + browseService + '\')">' + xmlDocB.getElementsByTagName("art")[i].innerHTML + '</a>';
                             }
                         }
                         browse.innerHTML = browseHtml;
