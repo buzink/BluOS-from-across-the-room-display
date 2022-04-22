@@ -141,6 +141,11 @@
         /* Hide scrollbar for Firefox */
     }
 
+    .queuescrollspace {
+        width: 100%;
+        margin-bottom: 100vh;
+    }
+
     #browse {
         display: none;
         flex-direction: column;
@@ -377,7 +382,7 @@
     <div id="panel2panel1" class="flex-direction">
         <div id="panel1">
             <img onclick="toggleControls();" id="albumcover" src="" />
-            <div id="controls">
+            <div id="controls" style="display:none;">
                 <button onclick="control('/Pause?toggle=1')" id="togglePause">Play </button>
                 <button onclick="control('/Back')" id="back">Back</button>
                 <button onclick="control('/Skip')" id="skip">Skip</button>
@@ -396,9 +401,9 @@
                 </div>
                 <img onclick="toggleControls();" id="hideControls" src="">
             </div>
-            <div id="playlist"></div>
-            <div id="playqueue"></div>
-            <div id="browse"></div>
+            <div id="playlist" style="display:none;"></div>
+            <div id="playqueue" style="display:none;"></div>
+            <div id="browse" style="display:none;"></div>
         </div>
         <div onclick="toggleControls()" id="panel2">
             <div id="panel2flex">
@@ -429,6 +434,20 @@
         var url = 'http://' + ipAddress + ':' + port;
         var previousBrowse = '';
         var searchQuery = '';
+        var update = 1;
+        var call = 1;
+        var eTag = "";
+        let playHistory = [];
+        let browseBreadCrumbs = ["loadPanel1View('controls')"];
+        const albumCover = document.getElementById('albumcover');
+        const controls = document.getElementById('controls');
+        const playList = document.getElementById('playlist');
+        const playQueue = document.getElementById('playqueue');
+        const browse = document.getElementById('browse');
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('ipaddress') != null) {
+            ipAddress = urlParams.get('ipaddress');
+        }
         if (receiverVolumeUpUrl != '' && receiverVolumeUpUrl != '') {
             var VolumeUpUrl = receiverVolumeUpUrl;
             var VolumeDownUrl = receiverVolumeDownUrl;
@@ -436,22 +455,7 @@
             var VolumeUpUrl = '/Volume?db=1&tell_slaves=off';
             var VolumeDownUrl = '/Volume?db=-1&tell_slaves=off';
         }
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('ipaddress') != null) {
-            ipAddress = urlParams.get('ipaddress');
-        }
-        var update = 1;
-        var call = 1;
-        var eTag = "";
-        let playHistory = [];
-        let browseBreadCrumbs = ["loadPanel1View('controls')"];
         longPoll();
-
-        const albumCover = document.getElementById('albumcover');
-        const controls = document.getElementById('controls');
-        const playList = document.getElementById('playlist');
-        const playQueue = document.getElementById('playqueue');
-        const browse = document.getElementById('browse');
         // TODO in longPolll:
         // show current and total track time
         // make artist and album clickable?
@@ -677,6 +681,11 @@
                             song.fn = xmlDoc.getElementsByTagName("fn")[0].innerHTML;
                         } else {
                             song.fn = '';
+                        } 
+                        if (typeof xmlDoc.getElementsByTagName("song")[0] != "undefined") {
+                            song.queuePos = xmlDoc.getElementsByTagName("song")[0].innerHTML;
+                        } else {
+                            song.queuePos = '';
                         }
                         document.getElementById("songTitle").innerHTML = song.title;
                         document.getElementById("artistName").innerHTML = song.artist;
@@ -702,7 +711,7 @@
                                 }
                             }
                         }
-
+                        focusSongInQueue();
                         //console.log(song);
                         //console.log(xmlDoc);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
@@ -768,6 +777,18 @@
         function showPlayQueue() {
             getPlayQueue();
             loadPanel1View('playqueue');
+            const focusSong = setTimeout(() => {
+                focusSongInQueue();
+            }, 1000);
+        }
+        function focusSongInQueue() {
+            if (typeof playHistory[0] != 'undefined' && playQueue.style.display != 'none' && playHistory[0].queuePos != '' && typeof document.getElementById(playHistory[0].queuePos) != 'undefined') {
+                try {
+                    document.getElementById(playHistory[0].queuePos).scrollIntoView();
+                } catch (error) {
+                    console.error(error);
+                }
+            }    
         }
         function showBrowseContent() {
             browseContent();
@@ -797,23 +818,6 @@
                     break;
             }
         }
-        //decrepitated
-        function addSongtoHistoryOLD(songTitle, songArtist, songAlbum, albumCover, service, quality, time, station, serviceicon) {
-            var songHtml = '<div id="t' + time.getTime() + '" class="playlistsong">';
-            songHtml += '<img class="playlistalbumcover" src="' + albumCover + '">';
-            songHtml += '<div class="playlistsongmeta">';
-            songHtml += '<div class="playlistsongtitle">' + songTitle + '</div>';
-            songHtml += '<div class="playlistsongartist">' + songArtist + '</div>';
-            songHtml += '<div class="playlistsongalbum">' + songAlbum + '</div>';
-            if (typeof serviceicon != 'undefined' && serviceicon != '') {
-                songHtml += '<div class="playlistsongservice"><img id="playlistsongserviceicon" src="' + serviceicon + '">' + station + ' ' + quality + '</div>';
-            } else {
-                songHtml += '<div class="playlistsongservice">' + service + ' ' + station + ' ' + quality + '</div>';
-            }
-            songHtml += '</div>';
-            songHtml += '</div>';
-            playList.innerHTML = songHtml + playList.innerHTML;
-        }
         function addSongtoHistory(songTitle, songArtist, songAlbum, albumCover, service, quality, time, station, serviceicon, fn) {
             var level1 = songTitle;
             var level2 = songArtist;
@@ -835,25 +839,6 @@
             }
             playList.innerHTML = buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id) + playList.innerHTML;
         }
-        //decrepitated
-        function addSongToQueueOLD(songTitle, songArtist, songAlbum, albumCover, service, quality, songid, id) {
-            var songHtml = '<div class="playlistsong">';
-            songHtml += '<img class="playlistalbumcover" src="' + url + '/Artwork?service=' + service + '&songid=' + songid + '">';
-            songHtml += '<div class="playlistsongmeta">';
-            songHtml += '<div class="playlistsongtitle">' + songTitle + '</div>';
-            songHtml += '<div class="playlistsongartist">' + songArtist + '</div>';
-            songHtml += '<div class="playlistsongalbum">' + songAlbum + '</div>';
-            if (typeof serviceicon != 'undefined' && serviceicon != '') {
-                songHtml += '<div class="playlistsongservice"><img id="playlistsongserviceicon" src="' + serviceicon + '">' + quality + ' ';
-            } else {
-                songHtml += '<div class="playlistsongservice">' + service + ' ' + quality + ' ';
-            }
-            songHtml += "<a  href=\"#\" onclick=\"removeFromQueue(" + id + ")\" class=\"removefromqueue\">&CircleTimes;</a>";
-            songHtml += '</div>';
-            songHtml += '</div>';
-            songHtml += '</div>';
-            playQueue.innerHTML = songHtml + playQueue.innerHTML;
-        }
         function addSongToQueue(songTitle, songArtist, songAlbum, albumCover, service, quality, songid, id) {
             var level1 = songTitle;
             var level2 = songArtist;
@@ -872,7 +857,7 @@
             }
             action1 = "control('/Play?id=" + id + "')";
             action2 = "removeFromQueue(" + id + ")";
-            playQueue.innerHTML = buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id) + playQueue.innerHTML;
+            playQueue.innerHTML += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id);
         }
         function buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action1, action2, id) {
             id = id || ' ';
@@ -949,8 +934,6 @@
                 }
             };
         }
-        // TODO in Play Queue:
-        // focus on active song
         function getPlayQueue() {
             var xhttpQ = new XMLHttpRequest();
             xhttpQ.open("GET", url + '/Playlist', true);
@@ -975,6 +958,7 @@
                             playQueue.innerHTML += '<p>There are no songs in the play queue</p>';
                         }
                         playQueue.innerHTML += '<button onclick="loadPanel1View(\'controls\')" id="showControls">Back</button>';
+                        playQueue.innerHTML += '<div class="queuescrollspace"></div>';
 
                     }
                 }
