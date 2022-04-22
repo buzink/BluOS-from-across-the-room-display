@@ -1021,7 +1021,6 @@
         // TODO in content browsing: 
         // fix non playable TuneIn playlists
         // display categories (iterate through xml instead of extracting tags)
-        // make artists and albums clickable everywhere
         // finetune styling
         function browseContent(key, query) {
             var xhttpB = new XMLHttpRequest();
@@ -1097,7 +1096,11 @@
                             }
                         }
                         if (typeof xmlDocB.getElementsByTagName("albums")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("album")[0] != "undefined") {
-                            browseHtml += '<h2>Albums</h2>';
+                            if (xmlDocB.getElementsByTagName("albums")[0].getAttribute('artistid') || key.includes('artistid')) {
+                                browseHtml += '<h2>Albums of artist</h2>';
+                            } else {
+                                browseHtml += '<h2>Albums</h2>';
+                            }
                             for (i = 0; i < xmlDocB.getElementsByTagName("album").length; i++) {
                                 var browseHtml2 = '';
                                 var level1 = '';
@@ -1118,6 +1121,9 @@
                                     imageUrl = '/Artwork?service=' + browseService + '&albumid=' + xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid');
                                     id = xmlDocB.getElementsByTagName("album")[i].getAttribute('albumid');
                                 }
+                                if (xmlDocB.getElementsByTagName("album")[i].getAttribute('artistid') && browseService) {
+                                    action2 = "browseContent('/Albums?artistid=" + xmlDocB.getElementsByTagName("album")[i].getAttribute('artistid') + "&service=" + browseService + "')";
+                                }
                                 if (typeof xmlDocB.getElementsByTagName("album")[i].getElementsByTagName('title')[0] != "undefined") {
                                     level1 = xmlDocB.getElementsByTagName("album")[i].getElementsByTagName('title')[0].innerHTML;
                                 }
@@ -1134,7 +1140,13 @@
                             }
                         }
                         if (typeof xmlDocB.getElementsByTagName("songs")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("song")[0] != "undefined") {
-                            browseHtml += '<h2>Songs</h2>';
+                            if (xmlDocB.getElementsByTagName("songs")[0].getAttribute('albumid')) {
+                                browseHtml += '<h2>Songs on album</h2>';
+                            } else if (xmlDocB.getElementsByTagName("songs")[0].getAttribute('artistid')) {
+                                browseHtml += '<h2>Songs of artist</h2>';
+                            } else {
+                                browseHtml += '<h2>Songs</h2>';
+                            }
                             for (i = 0; i < xmlDocB.getElementsByTagName("song").length; i++) {
                                 var browseHtml2 = '';
                                 var level1 = '';
@@ -1152,6 +1164,13 @@
                                     id = xmlDocB.getElementsByTagName("song")[i].getAttribute('songid');
                                     action0 = "control('/Add?id=" + xmlDocB.getElementsByTagName("song")[i].getAttribute('songid') + "&playnow=1')";
                                     imageUrl = '/Artwork?service=' + browseService + '&songid=' + xmlDocB.getElementsByTagName("song")[i].getAttribute('songid');
+                                }
+                                if (xmlDocB.getElementsByTagName("song")[i].getAttribute('artistid') && browseService) {
+                                    action2 = "browseContent('/Albums?artistid=" + xmlDocB.getElementsByTagName("song")[i].getAttribute('artistid') + "&service=" + browseService + "')";
+                                    action1 = action0;
+                                }
+                                if (xmlDocB.getElementsByTagName("song")[i].getAttribute('albumid') && browseService) {
+                                    action3 = "browseContent('/Songs?albumid=" + xmlDocB.getElementsByTagName("song")[i].getAttribute('albumid') + "&service=" + browseService + "')";
                                 }
                                 if (typeof xmlDocB.getElementsByTagName("song")[i].getElementsByTagName("title")[0] != 'undefined') {
                                     level1 = xmlDocB.getElementsByTagName("song")[i].getElementsByTagName("title")[0].innerHTML;
