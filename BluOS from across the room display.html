@@ -793,6 +793,7 @@
                                 document.getElementById("skip").style.display = 'inline-block';
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'stream') {
                                 playState = 'stream';
+                                progressSlider.max = 1000;
                                 document.getElementById("togglePause").innerHTML = "Pause";
                                 document.getElementById("togglePause").style.display = 'inline-block';
                                 document.getElementById("back").style.display = 'none';
@@ -846,12 +847,10 @@
                     if (newValue > maxValue) {
                         progressSlider.value = 0;
                     }
-                } else {
-
                 }
                 //console.log('oldvalue: ' + oldValue);
                 //console.log('newvalue: ' + newValue);
-                console.log('playState: ' + playState);
+                //console.log('playState: ' + playState);
             }
 
         }
