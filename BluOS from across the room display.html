@@ -49,8 +49,10 @@
         width: 39%;
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         align-items: center;
         justify-items: center;
+        align-content: center;
         overflow: hidden;
     }
 
@@ -121,6 +123,31 @@
 
     #receiverInputBluOS {
         display: none;
+    }
+
+    #progressslider {
+        -webkit-appearance: none;  /* Override default CSS styles */
+        appearance: none;
+        width: 100%;
+        height: 1px;
+        background: black;
+        outline: none; /* Remove outline */
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 50px;
+        height: 10px;
+        background: white;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 50px;
+        height: 10px;
+        background: white;
+        cursor: pointer;
     }
 
     #playqueue {
@@ -410,6 +437,7 @@
             <div id="playlist" style="display:none;"></div>
             <div id="playqueue" style="display:none;"></div>
             <div id="browse" style="display:none;"></div>
+            <input type="range" min="1" max="100" value="0" class="slider" id="progressslider">
         </div>
         <div onclick="toggleControls()" id="panel2">
             <div id="panel2flex">
@@ -426,7 +454,6 @@
             </div>
         </div>
     </div>
-
     <script>
         //Change ipAddress and port to that of your BluOS player:    
         var ipAddress = "192.168.2.86";
@@ -443,6 +470,7 @@
         var update = 1;
         var call = 1;
         var eTag = "";
+        var playState = '';
         let playHistory = [];
         let browseBreadCrumbs = ["loadPanel1View('controls')"];
         const albumCover = document.getElementById('albumcover');
@@ -450,6 +478,7 @@
         const playList = document.getElementById('playlist');
         const playQueue = document.getElementById('playqueue');
         const browse = document.getElementById('browse');
+        const progressSlider = document.getElementById('progressslider');
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('ipaddress') != null) {
             ipAddress = urlParams.get('ipaddress');
@@ -461,8 +490,14 @@
             var VolumeUpUrl = '/Volume?db=1&tell_slaves=off';
             var VolumeDownUrl = '/Volume?db=-1&tell_slaves=off';
         }
+        var progressUpdater = window.setInterval(updateProgressSlider, 1000); //window.clearInterval(progressUpdater);
+        if (progressSlider.addEventListener) {
+            progressSlider.addEventListener("click", setSeek, false);
+        } else if (progressSlider.attachEvent) {
+            progressSlider.attachEvent('onclick', setSeek);
+        }
         longPoll();
-        // TODO in longPolll:
+        // TODO in longPoll:
         // show current and total track time
         // make artist and album clickable?
         function longPoll() {
@@ -692,6 +727,16 @@
                         } else {
                             song.queuePos = '';
                         }
+                        if (typeof xmlDoc.getElementsByTagName("totlen")[0] != "undefined") {
+                            song.length = xmlDoc.getElementsByTagName("totlen")[0].innerHTML;
+                        } else {
+                            song.length = '';
+                        }
+                        if (typeof xmlDoc.getElementsByTagName("secs")[0] != "undefined") {
+                            song.position = xmlDoc.getElementsByTagName("secs")[0].innerHTML;
+                        } else {
+                            song.position = '';
+                        }
                         document.getElementById("songTitle").innerHTML = song.title;
                         document.getElementById("artistName").innerHTML = song.artist;
                         document.getElementById("albumTitle").innerHTML = song.album;
@@ -700,6 +745,12 @@
                         document.getElementById("hideControls").src = song.albumCover;
                         document.getElementById("serviceIcon").src = song.serviceIcon;
                         document.getElementById("quality").innerHTML = song.quality;
+                        if (song.length != '') {
+                            progressSlider.max = song.length;
+                        }
+                        if (song.position != '') {
+                            progressSlider.value = song.position;
+                        }
                         if (song.title != '' || song.artist != '' || song.album != '') {
                             if (typeof playHistory[0] === 'undefined') {
                                 playHistory.unshift(song);
@@ -721,25 +772,30 @@
                         //console.log(xmlDoc);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
+                                playState = 'pause';
                                 document.getElementById("togglePause").innerHTML = "Play ";
                                 document.getElementById("togglePause").style.display = 'inline-block';
                                 document.getElementById("back").style.display = 'inline-block';
                                 document.getElementById("skip").style.display = 'inline-block';
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'play') {
+                                playState = 'play';
                                 document.getElementById("togglePause").innerHTML = "Pause";
                                 document.getElementById("togglePause").style.display = 'inline-block';
                                 document.getElementById("back").style.display = 'inline-block';
                                 document.getElementById("skip").style.display = 'inline-block';
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'stream') {
+                                playState = 'stream';
                                 document.getElementById("togglePause").innerHTML = "Pause";
                                 document.getElementById("togglePause").style.display = 'inline-block';
                                 document.getElementById("back").style.display = 'none';
                                 document.getElementById("skip").style.display = 'none';
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'stop') {
+                                playState = 'stop';
                                 document.getElementById("togglePause").style.display = 'none';
                                 document.getElementById("back").style.display = 'none';
                                 document.getElementById("skip").style.display = 'none';
                             } else {
+                                playState = '';
                                 document.getElementById("togglePause").style.display = 'none';
                                 document.getElementById("back").style.display = 'none';
                                 document.getElementById("skip").style.display = 'none';
@@ -771,6 +827,29 @@
                 }
             };
             call = call + 1;
+        }
+        function updateProgressSlider() {
+            if (playState == 'play' || playState == 'stream') {
+                var oldValue = Number(progressSlider.value);
+                var newValue = oldValue + 1;
+                progressSlider.value = newValue;
+                if (playState == 'stream') {
+                    var maxValue = Number(progressSlider.max);
+                    if (newValue > maxValue ) {
+                        progressSlider.value = 0;
+                    }
+                } else {
+                    
+                }
+                //console.log('oldvalue: ' + oldValue);
+                //console.log('newvalue: ' + newValue);
+                console.log('playState: ' + playState);
+            }
+            
+        }
+        function setSeek() {
+            var position = progressSlider.value;
+            control('/Play?seek=' + position);
         }
         function toggleControls() {
             if (albumCover.style.display === 'none') {
@@ -1019,8 +1098,7 @@
             };
         }
         // TODO in content browsing: 
-        // fix non playable TuneIn playlists
-        // display categories (iterate through xml instead of extracting tags)
+        // display categories (iterate through xml instead of extracting tags?)
         // finetune styling
         function browseContent(key, query) {
             var xhttpB = new XMLHttpRequest();
