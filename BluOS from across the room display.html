@@ -19,8 +19,7 @@
         flex-direction: row;
         align-items: center;
         justify-items: center;
-        height: 96vh;
-        margin-top: 10px;
+        height: 98vh;
         overflow: hidden;
     }
 
@@ -130,21 +129,24 @@
     }
 
     #progressslider {
-        -webkit-appearance: none;
         /* Override default CSS styles */
+        -webkit-appearance: none;
         appearance: none;
         width: 100%;
-        height: 1px;
+        height: 0px;
         background: black;
-        outline: none;
         /* Remove outline */
+        outline: none;
+        position: fixed;
+        left: 0px;
+        bottom: 0px;
     }
 
     .slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 50px;
-        height: 10px;
+        height: 0.2vh;
         background: white;
         cursor: pointer;
     }
@@ -160,7 +162,6 @@
         display: none;
         flex-direction: column;
         flex-wrap: nowrap;
-        /*align-items: flex-start;*/
         gap: 1vh;
         width: 100%;
         height: 100%;
@@ -168,10 +169,10 @@
         overflow: scroll;
         overflow-y: scroll;
         overflow-x: hidden;
-        -ms-overflow-style: none;
         /* Hide scrollbar for IE and Edge */
-        scrollbar-width: none;
+        -ms-overflow-style: none;
         /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
     }
 
     .queuescrollspace {
@@ -183,7 +184,6 @@
         display: none;
         flex-direction: column;
         flex-wrap: wrap;
-        /*align-items: flex-start;*/
         gap: 1vh;
         width: 100%;
         height: 100%;
@@ -191,10 +191,10 @@
         overflow: scroll;
         overflow-y: scroll;
         overflow-x: hidden;
-        -ms-overflow-style: none;
         /* Hide scrollbar for IE and Edge */
-        scrollbar-width: none;
+        -ms-overflow-style: none;
         /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
     }
 
     #browse iframe {
@@ -214,10 +214,10 @@
         overflow: scroll;
         overflow-y: scroll;
         overflow-x: hidden;
-        -ms-overflow-style: none;
         /* Hide scrollbar for IE and Edge */
-        scrollbar-width: none;
+        -ms-overflow-style: none;
         /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
     }
 
     .playlistsong {
@@ -225,7 +225,6 @@
         width: 100%;
         display: flex;
         flex-wrap: nowrap;
-        /*overflow: hidden;*/
         font-size: 3vh;
         gap: 1vh;
         margin-bottom: 1vh;
