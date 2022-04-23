@@ -8,16 +8,20 @@
     body {
         background-color: black;
         color: white;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-items: center;
-        height: 98vh;
-        overflow: hidden;
     }
 
     body a {
         color: white;
+    }
+
+    #maincontain {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-items: center;
+        height: 96vh;
+        margin-top: 10px;
+        overflow: hidden;
     }
 
     #panel2panel1 {
@@ -126,12 +130,14 @@
     }
 
     #progressslider {
-        -webkit-appearance: none;  /* Override default CSS styles */
+        -webkit-appearance: none;
+        /* Override default CSS styles */
         appearance: none;
         width: 100%;
         height: 1px;
         background: black;
-        outline: none; /* Remove outline */
+        outline: none;
+        /* Remove outline */
     }
 
     .slider::-webkit-slider-thumb {
@@ -176,7 +182,7 @@
     #browse {
         display: none;
         flex-direction: column;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         /*align-items: flex-start;*/
         gap: 1vh;
         width: 100%;
@@ -410,50 +416,51 @@
 </style>
 
 <body>
-
-    <div id="panel2panel1" class="flex-direction">
-        <div id="panel1">
-            <img onclick="toggleControls();" id="albumcover" src="" />
-            <div id="controls" style="display:none;">
-                <button onclick="control('/Pause?toggle=1')" id="togglePause">Play </button>
-                <button onclick="control('/Back')" id="back">Back</button>
-                <button onclick="control('/Skip')" id="skip">Skip</button>
-                <button onclick="control(VolumeUpUrl)" id="volumeUp">Vol +</button>
-                <button onclick="control(VolumeDownUrl)" id="volumeDown">Vol -</button>
-                <div id="actions">
-                </div>
-                <button onclick="loadPanel1View('playlist')" id="togglesonghistory">History</button>
-                <button onclick="showBrowseContent()" id="showbrowsecontent">Browse</button>
-                <button onclick="control(receiverOnUrl)" id="receiverON">ON</button>
-                <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
-                <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
-                <button onclick="showPlayQueue()">Queue</button>
-                <button onclick="browseUrl('http://' + ipAddress)">Settings</button>
-                <button onclick="location.reload()">Reload</button>
-                <div id="presets">
-                </div>
-                <img onclick="toggleControls();" id="hideControls" src="">
-            </div>
-            <div id="playlist" style="display:none;"></div>
-            <div id="playqueue" style="display:none;"></div>
-            <div id="browse" style="display:none;"></div>
-            <input type="range" min="1" max="100" value="0" class="slider" id="progressslider">
-        </div>
-        <div onclick="toggleControls()" id="panel2">
-            <div id="panel2flex">
-                <div id="songTitle"></div>
-                <div id="artistName"></div>
-                <div id="albumTitle"></div>
-                <div id="meta">
-                    <img id="serviceIcon" src="" />
-                    <div id="station">
+    <div id="maincontain">
+        <div id="panel2panel1" class="flex-direction">
+            <div id="panel1">
+                <img onclick="toggleControls();" id="albumcover" src="" />
+                <div id="controls" style="display:none;">
+                    <button onclick="control('/Pause?toggle=1')" id="togglePause">Play </button>
+                    <button onclick="control('/Back')" id="back">Back</button>
+                    <button onclick="control('/Skip')" id="skip">Skip</button>
+                    <button onclick="control(VolumeUpUrl)" id="volumeUp">Vol +</button>
+                    <button onclick="control(VolumeDownUrl)" id="volumeDown">Vol -</button>
+                    <div id="actions">
                     </div>
-                    <div id="quality">
+                    <button onclick="loadPanel1View('playlist')" id="togglesonghistory">History</button>
+                    <button onclick="showBrowseContent()" id="showbrowsecontent">Browse</button>
+                    <button onclick="control(receiverOnUrl)" id="receiverON">ON</button>
+                    <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
+                    <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
+                    <button onclick="showPlayQueue()">Queue</button>
+                    <button onclick="browseUrl('http://' + ipAddress)">Settings</button>
+                    <button onclick="location.reload()">Reload</button>
+                    <div id="presets">
+                    </div>
+                    <img onclick="toggleControls();" id="hideControls" src="">
+                </div>
+                <div id="playlist" style="display:none;"></div>
+                <div id="playqueue" style="display:none;"></div>
+                <div id="browse" style="display:none;"></div>
+            </div>
+            <div onclick="toggleControls()" id="panel2">
+                <div id="panel2flex">
+                    <div id="songTitle"></div>
+                    <div id="artistName"></div>
+                    <div id="albumTitle"></div>
+                    <div id="meta">
+                        <img id="serviceIcon" src="" />
+                        <div id="station">
+                        </div>
+                        <div id="quality">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <input type="range" min="1" max="100" value="0" class="slider" id="progressslider">
     <script>
         //Change ipAddress and port to that of your BluOS player:    
         var ipAddress = "192.168.2.86";
@@ -721,7 +728,7 @@
                             song.fn = xmlDoc.getElementsByTagName("fn")[0].innerHTML;
                         } else {
                             song.fn = '';
-                        } 
+                        }
                         if (typeof xmlDoc.getElementsByTagName("song")[0] != "undefined") {
                             song.queuePos = xmlDoc.getElementsByTagName("song")[0].innerHTML;
                         } else {
@@ -835,24 +842,24 @@
                 progressSlider.value = newValue;
                 if (playState == 'stream') {
                     var maxValue = Number(progressSlider.max);
-                    if (newValue > maxValue ) {
+                    if (newValue > maxValue) {
                         progressSlider.value = 0;
                     }
                 } else {
-                    
+
                 }
                 //console.log('oldvalue: ' + oldValue);
                 //console.log('newvalue: ' + newValue);
                 console.log('playState: ' + playState);
             }
-            
+
         }
         function setSeek() {
             var position = progressSlider.value;
-            if (playState == 'play') { 
+            if (playState == 'play') {
                 control('/Play?seek=' + position);
             }
-            if (playState == 'pause') { 
+            if (playState == 'pause') {
                 control('/Play?seek=' + position);
                 const delayedPause = setTimeout(() => {
                     control('/Pause');
@@ -880,7 +887,7 @@
                 } catch (error) {
                     console.error(error);
                 }
-            }    
+            }
         }
         function showBrowseContent() {
             browseContent();
