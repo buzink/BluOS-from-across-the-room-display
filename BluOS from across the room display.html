@@ -185,7 +185,7 @@
     #browse {
         display: none;
         flex-direction: column;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 1vh;
         width: 100%;
         height: 100%;
@@ -506,7 +506,6 @@
         }
         longPoll();
         // TODO in longPoll:
-        // show current and total track time
         // make artist and album clickable?
         function longPoll() {
             var xhttp = new XMLHttpRequest();
