@@ -849,7 +849,15 @@
         }
         function setSeek() {
             var position = progressSlider.value;
-            control('/Play?seek=' + position);
+            if (playState == 'play') { 
+                control('/Play?seek=' + position);
+            }
+            if (playState == 'pause') { 
+                control('/Play?seek=' + position);
+                const delayedPause = setTimeout(() => {
+                    control('/Pause');
+                }, 500);
+            }
         }
         function toggleControls() {
             if (albumCover.style.display === 'none') {
