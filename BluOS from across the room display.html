@@ -1111,8 +1111,6 @@
                 }
             };
         }
-        // TODO in content browsing: 
-        // display categories (iterate through xml instead of extracting tags?)
         function browseContent(key, query) {
             var xhttpB = new XMLHttpRequest();
             var browseLink = '';
@@ -1177,20 +1175,17 @@
                             browseHtml += '<h2>Artists</h2>';
                         }
                         //traverse node tree
-                        //console.log('Parent: ' + xmlDocB.documentElement.nodeName);
                         var browseXmlL1 = xmlDocB.documentElement.childNodes;
                         var x = 0;
                         for (i = 0; i < browseXmlL1.length ;i++) {
                             if (browseXmlL1[i].nodeType == Node.ELEMENT_NODE) {
                                 x++;
-                                //console.log('Child ' + x + ': ' + browseXmlL1[i].nodeName);
                                 browseHtml += parseBrowseNode(browseXmlL1[i]);
                                 if (typeof browseXmlL1[i].childNodes != 'undefined') {
                                     var y = 0;
                                     for (j = 0; j < browseXmlL1[i].childNodes.length ;j++) {
                                         if (browseXmlL1[i].childNodes[j].nodeType == Node.ELEMENT_NODE) {
                                             y++;
-                                            //console.log('Grandchild ' + y + ': ' + browseXmlL1[i].childNodes[j].nodeName);
                                             browseHtml += parseBrowseNode(browseXmlL1[i].childNodes[j]);
                                         }
                                     }
