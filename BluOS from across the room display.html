@@ -752,10 +752,12 @@
                         document.getElementById("artistName").innerHTML = song.artist;
                         document.getElementById("albumTitle").innerHTML = song.album;
                         document.getElementById("station").innerHTML = song.station;
-                        document.getElementById("albumcover").src = song.albumCover;
                         document.getElementById("hideControls").src = song.albumCover;
                         document.getElementById("serviceIcon").src = song.serviceIcon;
                         document.getElementById("quality").innerHTML = song.quality;
+                        if (urlExists(song.albumCover)) {
+                            document.getElementById("albumcover").src = song.albumCover;
+                        }
                         if (song.length != '') {
                             progressSlider.max = song.length;
                         }
@@ -1430,6 +1432,15 @@
             } else {
                 //console.log('searchkey:' + searchKey + ' searchquery:' + document.getElementById("searchquery").value);
             }
+        }
+        function urlExists(url) {
+            var http = new XMLHttpRequest();
+            http.open('HEAD', url, false);
+            http.send();
+            if (http.status != 404)
+                return true;
+            else
+                return false;
         }
     </script>
 </body>
