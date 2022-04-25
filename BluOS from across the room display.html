@@ -483,7 +483,7 @@
         let browseBreadCrumbs = [{
             browsetext: 'Controls',
             browselink: "loadPanel1View('controls')"
-            
+
         }];
         const albumCover = document.getElementById('albumcover');
         const controls = document.getElementById('controls');
@@ -502,7 +502,7 @@
             var VolumeUpUrl = '/Volume?db=1&tell_slaves=off';
             var VolumeDownUrl = '/Volume?db=-1&tell_slaves=off';
         }
-        var progressUpdater = window.setInterval(updateProgressSlider, 1000); //window.clearInterval(progressUpdater);
+        var progressUpdater = window.setInterval(updateProgressSlider, 1000);
         if (progressSlider.addEventListener) {
             progressSlider.addEventListener("click", setSeek, false);
         } else if (progressSlider.attachEvent) {
@@ -513,7 +513,6 @@
         // make artist and album clickable?
         function longPoll() {
             var xhttp = new XMLHttpRequest();
-            //console.log("Api call " + call);
             xhttp.open("GET", url + "/Status?timeout=100&etag=" + eTag, true);
             xhttp.send();
             const tryAgain = setTimeout(() => {
@@ -755,9 +754,7 @@
                         document.getElementById("hideControls").src = song.albumCover;
                         document.getElementById("serviceIcon").src = song.serviceIcon;
                         document.getElementById("quality").innerHTML = song.quality;
-                        if (urlExists(song.albumCover)) {
-                            document.getElementById("albumcover").src = song.albumCover;
-                        }
+                        document.getElementById("albumcover").src = song.albumCover;
                         if (song.length != '') {
                             progressSlider.max = song.length;
                         }
@@ -781,8 +778,6 @@
                             }
                         }
                         focusSongInQueue();
-                        //console.log(song);
-                        //console.log(xmlDoc);
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
                                 playState = 'pause';
@@ -853,9 +848,6 @@
                         progressSlider.value = 0;
                     }
                 }
-                //console.log('oldvalue: ' + oldValue);
-                //console.log('newvalue: ' + newValue);
-                //console.log('playState: ' + playState);
             }
 
         }
@@ -898,7 +890,7 @@
             browseBreadCrumbs = [{
                 browsetext: 'Controls',
                 browselink: "loadPanel1View('controls')"
-                
+
             }];
             browseContent();
             loadPanel1View('browse');
@@ -1140,7 +1132,7 @@
             if (query) {
                 browseLink += '&q=' + query;
                 searchQuery = ' value="' + query + '" ';
-                previousBrowse.browselink = "browseContent('" + key + "','" + query +"'";
+                previousBrowse.browselink = "browseContent('" + key + "','" + query + "'";
             } else {
                 searchQuery = ' value="" ';
                 previousBrowse.browselink = "browseContent('" + browseLink + "',''";
@@ -1153,7 +1145,7 @@
             var browseBackLink = '';
             pos = browseBreadCrumbs.findIndex(i => i.browselink === previousBrowse.browselink)
             if (pos != '-1') {
-                browseBreadCrumbs.splice(pos+1,browseBreadCrumbs.length-(pos+1))
+                browseBreadCrumbs.splice(pos + 1, browseBreadCrumbs.length - (pos + 1))
             } else {
                 browseBreadCrumbs.push(previousBrowse);
             }
@@ -1167,9 +1159,9 @@
                         var browseHtml = '';
                         if (browseBreadCrumbs.length > 1) {
                             browseHtml += '<div id="breadcrumbs">';
-                            for (i = 1; i < browseBreadCrumbs.length ;i++) {
+                            for (i = 1; i < browseBreadCrumbs.length; i++) {
                                 browseHtml += '<a href ="#" onclick="' + browseBreadCrumbs[i].browselink + '">' + browseBreadCrumbs[i].browsetext + '</a>';
-                                if (i != (browseBreadCrumbs.length-1)) {
+                                if (i != (browseBreadCrumbs.length - 1)) {
                                     browseHtml += ' > ';
                                 }
                             }
@@ -1188,7 +1180,7 @@
                             if (title != browseService.replace(/\s+/g, '')) {
                                 browseHtml += '<h2>' + title + '</h2>';
                             }
-                        } else  if (typeof xmlDocB.getElementsByTagName("albums")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("album")[0] != "undefined") {
+                        } else if (typeof xmlDocB.getElementsByTagName("albums")[0] != "undefined" && typeof xmlDocB.getElementsByTagName("album")[0] != "undefined") {
                             if (xmlDocB.getElementsByTagName("albums")[0].getAttribute('artistid') || key.includes('artistid')) {
                                 browseHtml += '<h2>Albums of artist</h2>';
                             } else {
@@ -1210,13 +1202,13 @@
                         //traverse node tree
                         var browseXmlL1 = xmlDocB.documentElement.childNodes;
                         var x = 0;
-                        for (i = 0; i < browseXmlL1.length ;i++) {
+                        for (i = 0; i < browseXmlL1.length; i++) {
                             if (browseXmlL1[i].nodeType == Node.ELEMENT_NODE) {
                                 x++;
                                 browseHtml += parseBrowseNode(browseXmlL1[i]);
                                 if (typeof browseXmlL1[i].childNodes != 'undefined') {
                                     var y = 0;
-                                    for (j = 0; j < browseXmlL1[i].childNodes.length ;j++) {
+                                    for (j = 0; j < browseXmlL1[i].childNodes.length; j++) {
                                         if (browseXmlL1[i].childNodes[j].nodeType == Node.ELEMENT_NODE) {
                                             y++;
                                             browseHtml += parseBrowseNode(browseXmlL1[i].childNodes[j]);
@@ -1242,14 +1234,14 @@
                                 var action2 = '';
                                 var action3 = '';
                                 if (node.getAttribute('browseKey')) {
-                                    action0 = "browseContent('" + node.getAttribute('browseKey') + "','','" + node.getAttribute('text') +  "')";
+                                    action0 = "browseContent('" + node.getAttribute('browseKey') + "','','" + node.getAttribute('text') + "')";
                                 } else if (node.getAttribute('playURL')) {
-                                    action0 = "browseContent('" + node.getAttribute('playURL') + "','','" + node.getAttribute('text') +  "')";
+                                    action0 = "browseContent('" + node.getAttribute('playURL') + "','','" + node.getAttribute('text') + "')";
                                 } else if (node.getAttribute('URL')) {
                                     if (node.getAttribute('type') == 'audio') {
                                         action0 = 'control(\'/Play?url=' + node.getAttribute('URL') + '\')';
                                     } else if (node.getAttribute('type') == 'link') {
-                                        action0 = 'browseContent(\'/RadioBrowse?service=' + browseService + '&url=' + node.getAttribute('URL') + "','','" + node.getAttribute('text') +  "')";
+                                        action0 = 'browseContent(\'/RadioBrowse?service=' + browseService + '&url=' + node.getAttribute('URL') + "','','" + node.getAttribute('text') + "')";
                                     } else {
                                         //what is the default for item URLs?
                                     }
@@ -1320,7 +1312,7 @@
                                 }
                                 if (node.getAttribute('artistid') && browseService) {
                                     action2 = "browseContent('/Albums?artistid=" + node.getAttribute('artistid') + "&service=" + browseService;
-                                    if (typeof node.getElementsByTagName("art")[0] != 'undefined') { 
+                                    if (typeof node.getElementsByTagName("art")[0] != 'undefined') {
                                         action2 += "','','" + node.getElementsByTagName("art")[0].innerHTML;
                                     }
                                     action2 += "')";
@@ -1379,32 +1371,32 @@
                             }
                             if (node.nodeName == 'art') {
                                 if (node.parentNode.nodeName != 'album' && node.parentNode.nodeName != 'song') {
-                                var browseHtml2 = '';
-                                var level1 = '';
-                                var level2 = '';
-                                var level3 = '';
-                                var level4 = '';
-                                var imageUrl = '';
-                                var iconUrl = '';
-                                var action0 = '';
-                                var action1 = '';
-                                var id = node.getAttribute("artistid") || '';
-                                var action2 = '';
-                                var action3 = '';
-                                if (typeof node.innerHTML != 'undefined') {
-                                    level1 = node.innerHTML;
-                                }
-                                if (id) {
-                                    action0 = 'browseContent(\'/Albums?artistid=' + node.getAttribute("artistid") + '&service=' + browseService;
+                                    var browseHtml2 = '';
+                                    var level1 = '';
+                                    var level2 = '';
+                                    var level3 = '';
+                                    var level4 = '';
+                                    var imageUrl = '';
+                                    var iconUrl = '';
+                                    var action0 = '';
+                                    var action1 = '';
+                                    var id = node.getAttribute("artistid") || '';
+                                    var action2 = '';
+                                    var action3 = '';
                                     if (typeof node.innerHTML != 'undefined') {
-                                        action0 += "','','" + node.innerHTML;
+                                        level1 = node.innerHTML;
                                     }
-                                    action0 += "')";
-                                }
-                                if (typeof node.getAttribute('image') != 'undefined') {
-                                    imageUrl = node.getAttribute('image');
-                                }
-                                browseHtmlF += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3);
+                                    if (id) {
+                                        action0 = 'browseContent(\'/Albums?artistid=' + node.getAttribute("artistid") + '&service=' + browseService;
+                                        if (typeof node.innerHTML != 'undefined') {
+                                            action0 += "','','" + node.innerHTML;
+                                        }
+                                        action0 += "')";
+                                    }
+                                    if (typeof node.getAttribute('image') != 'undefined') {
+                                        imageUrl = node.getAttribute('image');
+                                    }
+                                    browseHtmlF += buildListItem(level1, level2, level3, level4, imageUrl, iconUrl, action0, action1, id, action2, action3);
                                 }
                             }
                             if (node.nodeName == 'nextlink') {
@@ -1412,7 +1404,7 @@
                                     if (!title.includes(' (more)')) {
                                         title = title + ' (more)';
                                     }
-                                    browseHtmlF += '<a href ="#" onclick="browseContent(\'' + node.innerHTML  + '\',\'\',\'' + title + '\')">more...</a>';
+                                    browseHtmlF += '<a href ="#" onclick="browseContent(\'' + node.innerHTML + '\',\'\',\'' + title + '\')">more...</a>';
                                 }
                             }
                             if (node.nodeName == 'category') {
@@ -1429,18 +1421,7 @@
         function search(searchKey) {
             if (document.getElementById("searchquery").value) {
                 browseContent(searchKey, document.getElementById("searchquery").value, 'Search for ' + document.getElementById("searchquery").value);
-            } else {
-                //console.log('searchkey:' + searchKey + ' searchquery:' + document.getElementById("searchquery").value);
             }
-        }
-        function urlExists(url) {
-            var http = new XMLHttpRequest();
-            http.open('HEAD', url, false);
-            http.send();
-            if (http.status != 404)
-                return true;
-            else
-                return false;
         }
     </script>
 </body>
