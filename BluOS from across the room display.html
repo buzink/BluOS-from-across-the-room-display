@@ -199,8 +199,14 @@
         scrollbar-width: none;
     }
 
-    #browse iframe {
+    iframe#browseurl {
         height: 100%;
+        border: none;
+    }
+
+    iframe#artistinfo {
+        height: 300px;
+        width: 100%;
         border: none;
     }
 
@@ -896,7 +902,7 @@
             loadPanel1View('browse');
         }
         function browseUrl(externalUrl) {
-            browse.innerHTML = '<iframe src="' + externalUrl + '">';
+            browse.innerHTML = '<iframe id="browseurl" src="' + externalUrl + '">';
             loadPanel1View('browse');
         }
         function loadPanel1View(view) {
@@ -1217,8 +1223,17 @@
                                 }
                             }
                         }
+                        browseHtml += '<div id="extrainfo" ></div>';
                         browseHtml += '<button onclick="' + browseBackLink + '">Back</button>';
                         browse.innerHTML = browseHtml;
+                        artistMatch = /artistid=([^,&'"]+)/g.exec(key);
+                        if (artistMatch != null) {
+                            getResponse(url + '/Info?artistid=' + artistMatch[1] + '&service=' + browseService,"renderHtml",'text','extrainfo');
+                        }
+                        albumMatch = /albumid=([^,&'"]+)/g.exec(key);
+                        if (albumMatch != null) {
+                            getResponse(url + '/Info?albumid=' + albumMatch[1] + '&service=' + browseService,"renderHtml",'text','extrainfo');
+                        }
                         function parseBrowseNode(node) {
                             var browseHtmlF = '';
                             if (node.nodeName == "item") {
@@ -1421,6 +1436,38 @@
         function search(searchKey) {
             if (document.getElementById("searchquery").value) {
                 browseContent(searchKey, document.getElementById("searchquery").value, 'Search for ' + document.getElementById("searchquery").value);
+            }
+        }
+        function makeHttpObject() {
+            try { return new XMLHttpRequest(); }
+            catch (error) { }
+            try { return new ActiveXObject("Msxml2.XMLHTTP"); }
+            catch (error) { }
+            try { return new ActiveXObject("Microsoft.XMLHTTP"); }
+            catch (error) { }
+
+            throw new Error("Could not create HTTP request object.");
+        }
+        function getResponse(url,fnName,responseType,secondArg) {
+            var request = makeHttpObject();
+            request.open("GET", url, true);
+            request.send(null);
+            request.onreadystatechange = function () {
+                if (request.readyState == 4) {
+                    if (responseType == 'xml') {
+                        responseObject = request.responseXML;
+                    } else {
+                        responseObject = request.responseText;
+                    }
+                    window[fnName](responseObject,secondArg,'add');
+                }
+            };
+        }
+        function renderHtml (html,target,mode) {
+            if (mode == 'replace') {
+                document.getElementById(target).innerHTML = html;
+            } else {
+                document.getElementById(target).innerHTML += html;
             }
         }
     </script>
