@@ -1,4 +1,4 @@
-git pull
+#git pull
 #you could create and pull a branch with your settings like this:
 #git pull origin roberts-personal-settings
 docker stop bluosdisplay

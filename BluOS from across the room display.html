@@ -428,24 +428,22 @@
             <div id="panel1">
                 <img onclick="toggleControls();" id="albumcover" src="" />
                 <div id="controls" style="display:none;">
-                    <button onclick="control('/Pause?toggle=1')" id="togglePause">Play </button>
-                    <button onclick="control('/Back')" id="back">Back</button>
-                    <button onclick="control('/Skip')" id="skip">Skip</button>
-                    <button onclick="control(VolumeUpUrl)" id="volumeUp">Vol +</button>
-                    <button onclick="control(VolumeDownUrl)" id="volumeDown">Vol -</button>
-                    <div id="actions">
-                    </div>
+                    <button onclick="control('/Back')" id="back">&#171;</button>
+                    <button onclick="control('/Pause?toggle=1')" id="togglePause">&#62;</button>
+                    <button onclick="control('/Skip')" id="skip">&#187;</button>
+                    <div id="actions"></div>
+                    <button onclick="control(VolumeUpUrl)" id="volumeUp">&#8743;</button>
+                    <button onclick="control(VolumeDownUrl)" id="volumeDown">&#8744;</button>
+                    <button onclick="control(receiverOnUrl)" id="receiverON">&#927;</button>
+                    <button onclick="control(receiverOffUrl)" id="receiverOFF">&#935;</button>
+                    <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
                     <button onclick="loadPanel1View('playlist')" id="togglesonghistory">History</button>
                     <button onclick="showBrowseContent()" id="showbrowsecontent">Browse</button>
-                    <button onclick="control(receiverOnUrl)" id="receiverON">ON</button>
-                    <button onclick="control(receiverOffUrl)" id="receiverOFF">OFF</button>
-                    <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
                     <button onclick="showPlayQueue()">Queue</button>
                     <button onclick="browseUrl('http://' + ipAddress)">Settings</button>
                     <button onclick="location.reload()">Reload</button>
-                    <div id="presets">
-                    </div>
                     <img onclick="toggleControls();" id="hideControls" src="">
+                    <div id="presets"></div>
                 </div>
                 <div id="playlist" style="display:none;"></div>
                 <div id="playqueue" style="display:none;"></div>
@@ -472,11 +470,12 @@
         //Change ipAddress and port to that of your BluOS player:    
         var ipAddress = "192.168.2.86";
         var port = "11000";
-        var receiverOnUrl = 'http://192.168.2.79:8000/api/PWON';
-        var receiverOffUrl = 'http://192.168.2.79:8000/api/PWSTANDBY';
-        var receiverInputBluOSUrl = 'http://192.168.2.79:8000/api/MSQUICK1';
-        var receiverVolumeUpUrl = 'http://192.168.2.79:8000/api/MVUP';
-        var receiverVolumeDownUrl = 'http://192.168.2.79:8000/api/MVDOWN';
+        //(var receiver[^= ]+) =       $1 = ''; //
+        var receiverOnUrl = ''; //'http://192.168.2.79:8000/api/PWON';
+        var receiverOffUrl = ''; //'http://192.168.2.79:8000/api/PWSTANDBY';
+        var receiverInputBluOSUrl = ''; //'http://192.168.2.79:8000/api/MSQUICK1';
+        var receiverVolumeUpUrl = ''; //'http://192.168.2.79:8000/api/MVUP';
+        var receiverVolumeDownUrl = ''; //'http://192.168.2.79:8000/api/MVDOWN';
         //stop editing here unless you know what your are doing :)
         var url = 'http://' + ipAddress + ':' + port;
         var previousBrowse = '';
@@ -784,43 +783,49 @@
                             }
                         }
                         focusSongInQueue();
+                        //Play: &#62; Pause: &#124;&#124;
                         if (typeof xmlDoc.getElementsByTagName("state")[0] != "undefined") {
                             if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'pause') {
                                 playState = 'pause';
-                                document.getElementById("togglePause").innerHTML = "Play ";
-                                document.getElementById("togglePause").style.display = 'inline-block';
-                                document.getElementById("back").style.display = 'inline-block';
-                                document.getElementById("skip").style.display = 'inline-block';
+                                document.getElementById("togglePause").innerHTML = "&#62;";
+                                //document.getElementById("togglePause").style.display = 'inline-block';
+                                document.getElementById("back").style.visibility = 'visible';
+                                document.getElementById("skip").style.visibility = 'visible';
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'play') {
                                 playState = 'play';
-                                document.getElementById("togglePause").innerHTML = "Pause";
-                                document.getElementById("togglePause").style.display = 'inline-block';
-                                document.getElementById("back").style.display = 'inline-block';
-                                document.getElementById("skip").style.display = 'inline-block';
+                                document.getElementById("togglePause").innerHTML = "&#124;&#124;";
+                                //document.getElementById("togglePause").style.display = 'inline-block';
+                                document.getElementById("back").style.visibility = 'visible';
+                                document.getElementById("skip").style.visibility = 'visible';
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'stream') {
                                 playState = 'stream';
                                 progressSlider.max = 1000;
-                                document.getElementById("togglePause").innerHTML = "Pause";
-                                document.getElementById("togglePause").style.display = 'inline-block';
-                                document.getElementById("back").style.display = 'none';
-                                document.getElementById("skip").style.display = 'none';
+                                document.getElementById("togglePause").innerHTML = "&#124;&#124;";
+                                //document.getElementById("togglePause").style.display = 'inline-block';
+                                document.getElementById("back").style.visibility = 'hidden';
+                                document.getElementById("skip").style.visibility = 'hidden';
                             } else if (xmlDoc.getElementsByTagName("state")[0].innerHTML == 'stop') {
                                 playState = 'stop';
-                                document.getElementById("togglePause").style.display = 'none';
-                                document.getElementById("back").style.display = 'none';
-                                document.getElementById("skip").style.display = 'none';
+                                //document.getElementById("togglePause").style.display = 'none';
+                                document.getElementById("back").style.visibility = 'hidden';
+                                document.getElementById("skip").style.visibility = 'hidden';
                             } else {
                                 playState = '';
-                                document.getElementById("togglePause").style.display = 'none';
-                                document.getElementById("back").style.display = 'none';
-                                document.getElementById("skip").style.display = 'none';
+                                //document.getElementById("togglePause").style.display = 'none';
+                                document.getElementById("back").style.visibility = 'hidden';
+                                document.getElementById("skip").style.visibility = 'hidden';
                             }
                         }
                         document.getElementById("actions").innerHTML = '';
                         if (typeof xmlDoc.getElementsByTagName("action")[0] != "undefined") {
                             for (i = 0; i < xmlDoc.getElementsByTagName("action").length; i++) {
                                 if (typeof xmlDoc.getElementsByTagName("action")[i].getAttribute('url') != 'undefined' && xmlDoc.getElementsByTagName("action")[i].getAttribute('url') != null) {
-                                    document.getElementById("actions").innerHTML += '<button onclick=\"control(\'' + xmlDoc.getElementsByTagName("action")[i].getAttribute('url') + '\')\"" id=\"' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '\">' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '</button>';
+                                    if (xmlDoc.getElementsByTagName("action")[i].getAttribute('name') == 'skip') {
+                                        document.getElementById("skip").onclick = 'control(\'' + xmlDoc.getElementsByTagName("action")[i].getAttribute('url') + '\')';
+                                        document.getElementById("skip").style.visibility = 'visible';
+                                    } else if (xmlDoc.getElementsByTagName("action")[i].getAttribute('name') != 'shop') {
+                                        document.getElementById("actions").innerHTML += '<button onclick=\"control(\'' + xmlDoc.getElementsByTagName("action")[i].getAttribute('url') + '\')\"" id=\"' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '\">' + xmlDoc.getElementsByTagName("action")[i].getAttribute('name') + '</button>';
+                                    }
                                 }
                             }
                         }
@@ -1228,11 +1233,11 @@
                         browse.innerHTML = browseHtml;
                         artistMatch = /artistid=([^,&'"]+)/g.exec(key);
                         if (artistMatch != null) {
-                            getResponse(url + '/Info?artistid=' + artistMatch[1] + '&service=' + browseService,"renderHtml",'text','extrainfo');
+                            getResponse(url + '/Info?artistid=' + artistMatch[1] + '&service=' + browseService, "renderHtml", 'text', 'extrainfo');
                         }
                         albumMatch = /albumid=([^,&'"]+)/g.exec(key);
                         if (albumMatch != null) {
-                            getResponse(url + '/Info?albumid=' + albumMatch[1] + '&service=' + browseService,"renderHtml",'text','extrainfo');
+                            getResponse(url + '/Info?albumid=' + albumMatch[1] + '&service=' + browseService, "renderHtml", 'text', 'extrainfo');
                         }
                         function parseBrowseNode(node) {
                             var browseHtmlF = '';
@@ -1448,7 +1453,7 @@
 
             throw new Error("Could not create HTTP request object.");
         }
-        function getResponse(url,fnName,responseType,secondArg) {
+        function getResponse(url, fnName, responseType, secondArg) {
             var request = makeHttpObject();
             request.open("GET", url, true);
             request.send(null);
@@ -1459,11 +1464,11 @@
                     } else {
                         responseObject = request.responseText;
                     }
-                    window[fnName](responseObject,secondArg,'add');
+                    window[fnName](responseObject, secondArg, 'add');
                 }
             };
         }
-        function renderHtml (html,target,mode) {
+        function renderHtml(html, target, mode) {
             if (mode == 'replace') {
                 document.getElementById(target).innerHTML = html;
             } else {
