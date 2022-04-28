@@ -1,0 +1,1 @@
+sed -E -i '' "s|(var receiver[^ ]+ = )''; // |\1|g" "BluOS from across the room display.html"
