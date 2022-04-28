@@ -1,0 +1,11 @@
+[{
+    "command": "ssmacro.replace",
+    "args": {
+        "info": "activate receiver urls",
+        "find": "(var receiver.+ = )''; // ",
+        "replace": "$1",
+        "all": true,
+        "reg": true,
+        "flag": "gm"
+    }
+}]
