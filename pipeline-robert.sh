@@ -1,6 +1,7 @@
 git pull
 #you could create and pull a branch with your settings like this:
 #git pull origin roberts-personal-settings
+./uncomment-receiver-urls.sh 
 docker stop bluosdisplay
 docker build -t bluosdisplay-nginx .
 docker run --rm --name bluosdisplay -d -p 9090:80 bluosdisplay-nginx
