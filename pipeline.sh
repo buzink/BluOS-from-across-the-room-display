@@ -1,3 +1,4 @@
+git stash
 git pull
 #you could create and pull a branch with your settings like this:
 #git pull origin roberts-personal-settings
