@@ -130,6 +130,10 @@
         display: none;
     }
 
+    #receiverInputTV {
+        display: none;
+    }
+
     #progressslider {
         /* Override default CSS styles */
         -webkit-appearance: none;
@@ -437,6 +441,7 @@
                     <button onclick="control(receiverOnUrl)" id="receiverON">&#927;</button>
                     <button onclick="control(receiverOffUrl)" id="receiverOFF">&#935;</button>
                     <button onclick="control(receiverInputBluOSUrl)" id="receiverInputBluOS">BluOS</button>
+                    <button onclick="control(receiverInputTVUrl)" id="receiverInputTV">TV</button>
                     <button onclick="loadPanel1View('playlist')" id="togglesonghistory">History</button>
                     <button onclick="showBrowseContent()" id="showbrowsecontent">Browse</button>
                     <button onclick="showPlayQueue()">Queue</button>
@@ -470,11 +475,12 @@
         //Change ipAddress and port to that of your BluOS player:    
         var ipAddress = "192.168.178.26";
         var port = "11000";
-        var receiverOnUrl = ''; // 'http://192.168.178.39:8000/api/PWON';
-        var receiverOffUrl = ''; // 'http://192.168.178.39:8000/api/PWSTANDBY';
-        var receiverInputBluOSUrl = ''; // 'http://192.168.178.39:8000/api/MSQUICK1';
-        var receiverVolumeUpUrl = ''; // 'http://192.168.178.39:8000/api/MVUP';
-        var receiverVolumeDownUrl = ''; // 'http://192.168.178.39:8000/api/MVDOWN';
+        var receiverOnUrl = ''; // 'http://192.168.178.25:8080/goform/formiPhoneAppDirect.xml?PWON';
+        var receiverOffUrl = ''; // 'http://192.168.178.25:8080/goform/formiPhoneAppDirect.xml?PWSTANDBY';
+        var receiverInputBluOSUrl = ''; // 'http://192.168.178.25:8080/goform/formiPhoneAppDirect.xml?SISAT';
+        var receiverInputTVUrl = ''; // 'http://192.168.178.25:8080/goform/formiPhoneAppDirect.xml?SITV';
+        var receiverVolumeUpUrl = ''; // 'http://192.168.178.25:8080/goform/formiPhoneAppDirect.xml?MVUP';
+        var receiverVolumeDownUrl = ''; // 'http://192.168.178.25:8080/goform/formiPhoneAppDirect.xml?MVDOWN';
         //stop editing here unless you know what your are doing :)
         var url = 'http://' + ipAddress + ':' + port;
         var previousBrowse = '';
@@ -836,6 +842,9 @@
                         }
                         if (receiverInputBluOSUrl != '') {
                             document.getElementById("receiverInputBluOS").style.display = 'inline-block';
+                        }
+                        if (receiverInputTVUrl != '') {
+                            document.getElementById("receiverInputTV").style.display = 'inline-block';
                         }
                         //console.log("Update " + update);
                         update = update + 1;
